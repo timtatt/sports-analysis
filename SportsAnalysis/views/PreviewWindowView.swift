@@ -86,10 +86,9 @@ struct PreviewWindowPlayer : NSViewRepresentable {
     }
 }
 
-struct PreviewWindow : View {
+struct PreviewWindowView : View {
     
-    @StateObject var playerState = PlayerState()
-    
+    @ObservedObject var playerState = PlayerState()
     
     var body : some View {
         
@@ -120,7 +119,7 @@ struct PreviewWindow : View {
 
 struct PreviewWindow_Previews: PreviewProvider {
     static var previews: some View {
-        PreviewWindow()
+        PreviewWindowView()
             .frame(width: 720.0, height: 576.0)
     }
 }

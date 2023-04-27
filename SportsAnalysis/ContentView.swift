@@ -9,18 +9,34 @@ import SwiftUI
 import AVKit
 
 struct ContentView: View {
+    @StateObject var playerState = PlayerState()
     
+    @StateObject var projectStore = ProjectStore()
     
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-            PreviewWindow()
-                .frame(width: 720.0, height: 576.0)
+            Button("Save Project") {
+                do {
+                    try projectStore.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+            Button("Load Project") {
+                do {
+                    try projectStore.load()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+            HStack {
+                
+                ProjectManagerView(playerState: playerState, project: projectStore.project)
+                
+                PreviewWindowView(playerState: playerState)
+                    .frame(width: 720.0, height: 576.0)
+            }
         }
-        .padding()
     }
 }
 
