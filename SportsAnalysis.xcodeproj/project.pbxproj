@@ -14,6 +14,8 @@
 		0FA3A9FE29F92BAA00B9FB29 /* SportsAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9FD29F92BAA00B9FB29 /* SportsAnalysisTests.swift */; };
 		0FA3AA0829F92BAA00B9FB29 /* SportsAnalysisUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA0729F92BAA00B9FB29 /* SportsAnalysisUITests.swift */; };
 		0FA3AA0A29F92BAA00B9FB29 /* SportsAnalysisUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA0929F92BAA00B9FB29 /* SportsAnalysisUITestsLaunchTests.swift */; };
+		0FA3AA1929F92D9B00B9FB29 /* M2U01222.MPG in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3AA1829F92D9B00B9FB29 /* M2U01222.MPG */; };
+		0FA3AA1B29F935BC00B9FB29 /* PreviewWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA1A29F935BC00B9FB29 /* PreviewWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		0FA3AA0329F92BAA00B9FB29 /* SportsAnalysisUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SportsAnalysisUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FA3AA0729F92BAA00B9FB29 /* SportsAnalysisUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAnalysisUITests.swift; sourceTree = "<group>"; };
 		0FA3AA0929F92BAA00B9FB29 /* SportsAnalysisUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAnalysisUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		0FA3AA1829F92D9B00B9FB29 /* M2U01222.MPG */ = {isa = PBXFileReference; lastKnownFileType = video.mpeg; name = M2U01222.MPG; path = "../../../../Desktop/Videos Test/M2U01222.MPG"; sourceTree = "<group>"; };
+		0FA3AA1A29F935BC00B9FB29 /* PreviewWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,11 +99,13 @@
 		0FA3A9EA29F92BA800B9FB29 /* SportsAnalysis */ = {
 			isa = PBXGroup;
 			children = (
+				0FA3AA1829F92D9B00B9FB29 /* M2U01222.MPG */,
 				0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */,
 				0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */,
 				0FA3A9EF29F92BA900B9FB29 /* Assets.xcassets */,
 				0FA3A9F129F92BA900B9FB29 /* SportsAnalysis.entitlements */,
 				0FA3A9F229F92BA900B9FB29 /* Preview Content */,
+				0FA3AA1A29F935BC00B9FB29 /* PreviewWindow.swift */,
 			);
 			path = SportsAnalysis;
 			sourceTree = "<group>";
@@ -235,6 +241,7 @@
 			files = (
 				0FA3A9F429F92BA900B9FB29 /* Preview Assets.xcassets in Resources */,
 				0FA3A9F029F92BA900B9FB29 /* Assets.xcassets in Resources */,
+				0FA3AA1929F92D9B00B9FB29 /* M2U01222.MPG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +268,7 @@
 			files = (
 				0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */,
 				0FA3A9EC29F92BA800B9FB29 /* SportsAnalysisApp.swift in Sources */,
+				0FA3AA1B29F935BC00B9FB29 /* PreviewWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,10 +445,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.timtatt.SportsAnalysis;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -475,10 +484,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.timtatt.SportsAnalysis;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

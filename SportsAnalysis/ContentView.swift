@@ -6,14 +6,19 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct ContentView: View {
+    
+    
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundColor(.accentColor)
             Text("Hello, world!")
+            PreviewWindow()
+                .frame(width: 720.0, height: 576.0)
         }
         .padding()
     }
