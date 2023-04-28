@@ -6,12 +6,30 @@
 //
 
 import Foundation
+import AVFoundation
 
-class ProjectVideo : Codable {
-    let filePath: String
+struct ProjectVideo : Codable {
+    var name: String
+    let filePath: URL
+    var events: [ProjectEvent]
     
-    init(filePath: String) {
+    private enum CodingKeys: String, CodingKey {
+        case name, filePath, events
+    }
+    
+    init(name: String, filePath: URL, events: [ProjectEvent] = []) {
         self.filePath = filePath
+        self.events = events
+        self.name = name
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        name = try values.decode(String.self, forKey: .name)
+        events = try values.decode([ProjectEvent].self, forKey: .events)
+        
+        let absoluteFilePath = try values.decode(String.self, forKey: .filePath)
+        filePath = URL(fileURLWithPath: absoluteFilePath)
     }
     
 }

@@ -9,16 +9,18 @@ import AppKit
 import SwiftUI
 
 struct EventManager : View {
-    @State var events: [String] = []
-    @ObservedObject var playerState: PlayerState
+    @ObservedObject var project : Project
     
     var body : some View {
         VStack {
-            ForEach(events, id: \.self) {
-                event in Text(event)
-            }
-            Button("Create Event") {
-                events.append(String(playerState.playbackTime))
+            Text("Event Manager")
+            ForEach(Array(project.events.enumerated()), id: \.offset) { index, event in
+                HStack {
+                    Text("\(event.startTime): \(event.code.name)")
+                    Button("x") {
+                        project.events.remove(at: index)
+                    }
+                }
             }
         }
     }
@@ -27,6 +29,6 @@ struct EventManager : View {
 
 struct EventManager_Previews: PreviewProvider {
     static var previews: some View {
-        EventManager(playerState: PlayerState())
+        EventManager(project: Project())
     }
 }

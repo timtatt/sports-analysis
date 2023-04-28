@@ -15,19 +15,22 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Button("Save Project") {
-                do {
-                    try projectStore.save()
-                } catch {
-                    fatalError(error.localizedDescription)
+            HStack {
+                Button("Save Project") {
+                    do {
+                        try projectStore.save()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
                 }
-            }
-            Button("Load Project") {
-                do {
-                    try projectStore.load()
-                } catch {
-                    fatalError(error.localizedDescription)
+                Button("Load Project") {
+                    do {
+                        try projectStore.load()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
                 }
+                Text("modes for coding|analysis")
             }
             HStack {
                 
@@ -35,6 +38,11 @@ struct ContentView: View {
                 
                 PreviewWindowView(playerState: playerState)
                     .frame(width: 720.0, height: 576.0)
+                
+                EventManager(project: projectStore.project)
+                    .tabItem {
+                        Label("Events", systemImage: "tray.and.arrow.up.fill")
+                    }
             }
         }
     }

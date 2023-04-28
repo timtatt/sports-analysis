@@ -13,9 +13,9 @@ struct ProjectManagerView : View {
     
     var body : some View {
         TabView {
-            EventManager(playerState: playerState)
+            ProjectCodesView(project: project, playbackTime: $playerState.playbackTime)
                 .tabItem {
-                    Label("Events", systemImage: "tray.and.arrow.up.fill")
+                    Label("Codes", systemImage: "tray.and.arrow.up.fill")
                 }
             ProjectSettingsView(project: project)
                 .tabItem {
