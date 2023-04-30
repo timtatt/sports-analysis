@@ -20,6 +20,7 @@ struct ContentView: View {
                     do {
                         try projectStore.save()
                     } catch {
+                        print(error)
                         fatalError(error.localizedDescription)
                     }
                 }
@@ -27,6 +28,7 @@ struct ContentView: View {
                     do {
                         try projectStore.load()
                     } catch {
+                        print(error)
                         fatalError(error.localizedDescription)
                     }
                 }

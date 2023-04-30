@@ -95,7 +95,7 @@ class PreviewWindowPlayerView : NSView {
             fatalError("Unable to load videos")
         }
         
-        
+        updateComposition()
     }
     
     func updateComposition() {

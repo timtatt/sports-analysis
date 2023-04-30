@@ -43,7 +43,7 @@ class ProjectStore : ObservableObject {
         }
         
         let data = try Data(contentsOf: projectFilePath!)
-        
+        print(data)
         project = try JSONDecoder().decode(Project.self, from: data)
     }
 

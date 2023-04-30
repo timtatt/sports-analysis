@@ -11,17 +11,43 @@ import SwiftUI
 struct EventManager : View {
     @ObservedObject var project : Project
     
+    @State private var selectedEvents = Dictionary<UUID, ProjectEvent>()
+    
     var body : some View {
         VStack {
             Text("Event Manager")
-            ForEach(Array(project.events.enumerated()), id: \.offset) { index, event in
-                HStack {
-                    Text("\(event.startTime): \(event.code.name)")
-                    Button("x") {
-                        project.events.remove(at: index)
-                    }
+            List(project.events) { event in
+                EventListItem(event: event, selectedEvents: $selectedEvents)
+            }
+        }
+    }
+}
+
+struct EventListItem : View {
+    @ObservedObject var event: ProjectEvent
+    @Binding var selectedEvents: Dictionary<UUID, ProjectEvent>
+    
+    
+    
+    var body : some View {
+        let isSelected: Binding<Bool> = Binding(
+            get: { selectedEvents[event.id] != nil },
+            set: { (val: Bool) -> Void in
+                if (val) {
+                    selectedEvents[event.id] = event
+                } else {
+                    selectedEvents[event.id] = nil
                 }
             }
+        )
+        
+        HStack {
+            Toggle("", isOn: isSelected)
+                .toggleStyle(.checkbox)
+            Text("\(event.startTime): \(event.code.name)")
+//                    Button("x") {
+//                        project.events.remove(at: index)
+//                    }
         }
     }
 }
