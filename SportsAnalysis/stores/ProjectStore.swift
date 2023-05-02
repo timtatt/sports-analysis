@@ -10,24 +10,35 @@ import AppKit
 import UniformTypeIdentifiers
 
 class ProjectStore : ObservableObject {
-    static let LAST_PROJECT_PATH_KEY = "LastProjectPath"
+    static let LAST_PROJECT_PATH_KEY = "lastProjectBookmark"
     
     @Published var project: Project = Project()
     @Published var projectFilePath: URL? = nil
     
     func loadLastProject() {
-        let lastProjectPath = UserDefaults.standard.string(forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
+        let lastProjectBookmark = UserDefaults.standard.data(forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
         
-        if (lastProjectPath != nil) {
+        if (lastProjectBookmark != nil) {
             do {
-                let lastProjectPathUrl = URL(fileURLWithPath: lastProjectPath!)
-                print(lastProjectPathUrl)
-                try load(filePath: lastProjectPathUrl)
+                logger.info("Attempting to load project bookmark")
+                
+                var isStale = false
+                let lastProject = try URL(resolvingBookmarkData: lastProjectBookmark!, options: .withoutUI, relativeTo: nil, bookmarkDataIsStale: &isStale)
+                
+                if (isStale) {
+                    logger.warning("Last project data is stale, not loading the project")
+                    return;
+                }
+
+                try load(filePath: lastProject)
+                
+                logger.info("Successfully loaded previous project")
             } catch {
-                // TODO use proper logger
-                print("Unable to load previous project")
+                logger.warning("Unable to load previous project")
                 print(error)
             }
+        } else {
+            logger.info("No previous project to load")
         }
     }
     
@@ -44,19 +55,27 @@ class ProjectStore : ObservableObject {
         
         if (filePath != nil) {
             try load(filePath: filePath!)
+            
+            saveProjectBookmark(filePath: filePath!)
         }
     }
     
-    func setProjectPath(filePath: URL) {
-        UserDefaults.standard.set(filePath.path, forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
+    func saveProjectBookmark(filePath: URL) {
+        do {
+            let bookmark = try filePath.bookmarkData()
+            UserDefaults.standard.set(bookmark, forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
+        } catch {
+            logger.warning("Unable to save project as bookmark")
+            print(error)
+        }
     }
     
     func load(filePath: URL) throws {
         let data = try Data(contentsOf: filePath)
         
-        project = try JSONDecoder().decode(Project.self, from: data)
+        let project = try JSONDecoder().decode(Project.self, from: data)
         
-        setProjectPath(filePath: filePath)
+        self.project = project
     }
 
     func save() throws {
@@ -77,6 +96,6 @@ class ProjectStore : ObservableObject {
         let data = try JSONEncoder().encode(project)
         try data.write(to: filePath!)
         
-        setProjectPath(filePath: filePath!)
+        saveProjectBookmark(filePath: filePath!)
     }
 }
