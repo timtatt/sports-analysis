@@ -10,19 +10,27 @@ import SwiftUI
 
 struct EventManager : View {
     @ObservedObject var project : Project
+    @ObservedObject var playerState : PlayerState
     
     @State private var selectedEvents = Dictionary<UUID, ProjectEvent>()
+    
     
     var body : some View {
         var _selectedEvent: ProjectEvent?
         let selectedEvent = Binding<UUID?>(
             get: { _selectedEvent?.id },
-            set: { val in _selectedEvent = val != nil ? selectedEvents[val!] ?? nil : nil }
+            set: { val in
+                _selectedEvent = val != nil ? project.events[val!] ?? nil : nil
+                if (_selectedEvent != nil) {
+                    playerState.seek(seconds: _selectedEvent!.startTime)
+                    playerState.isPlaying = false
+                }
+            }
         )
         
         VStack {
             Text("Event Manager")
-            List(project.events, selection: selectedEvent) { event in
+            List(project.events.values, selection: selectedEvent) { event in
                 EventListItem(event: event, selectedEvents: $selectedEvents)
             }
             Button("Export Selected Events") {
@@ -35,7 +43,6 @@ struct EventManager : View {
 struct EventListItem : View {
     @ObservedObject var event: ProjectEvent
     @Binding var selectedEvents: Dictionary<UUID, ProjectEvent>
-    
     
     
     var body : some View {
@@ -64,6 +71,6 @@ struct EventListItem : View {
 
 struct EventManager_Previews: PreviewProvider {
     static var previews: some View {
-        EventManager(project: Project())
+        EventManager(project: Project(), playerState: PlayerState())
     }
 }

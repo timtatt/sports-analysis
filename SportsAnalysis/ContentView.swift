@@ -58,7 +58,7 @@ struct ContentView: View {
                         }
                     }
                 
-                EventManager(project: projectStore.project)
+                EventManager(project: projectStore.project, playerState: playerState)
                     .tabItem {
                         Label("Events", systemImage: "tray.and.arrow.up.fill")
                     }

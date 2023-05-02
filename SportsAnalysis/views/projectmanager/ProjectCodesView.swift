@@ -24,8 +24,8 @@ struct ProjectCodesView : View {
                         let event = ProjectEvent(code: code, timestamp: playbackTime)
                         
                         // TODO optimise this insert
-                        project.events.append(event)
-                        project.events.sort(by: { a, b in a.startTime > b.startTime })
+                        project.events[event.id] = event
+                        project.events.sort(by: { a, b in a.value.startTime > b.value.startTime })
                     }
                 }
             }

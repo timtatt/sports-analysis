@@ -7,19 +7,22 @@
 
 import Foundation
 import AVFoundation
+import OrderedCollections
 
 class Project: ObservableObject, Codable {
     @Published var name: String
     @Published var videos: [ProjectVideo]
     @Published var codes: [ProjectCode]
-    @Published var events: [ProjectEvent]
+    @Published var events: OrderedDictionary<UUID, ProjectEvent>
+    
     
     init(name: String = "My New Project",
          videos: [ProjectVideo] = [],
          events: [ProjectEvent] = []) {
         self.name = name
         self.videos = videos
-        self.events = events
+        self.events = OrderedDictionary(uniqueKeysWithValues: events.map({ ($0.id, $0) }))
+        
         self.codes = [
             ProjectCode(name: "Inside 50 (SB)", shortcut: "A"),
             ProjectCode(name: "Inside 50 (OP)", shortcut: "B"),
@@ -28,7 +31,7 @@ class Project: ObservableObject, Codable {
             ProjectCode(name: "Defensive Pressure", shortcut: "C"),
             ProjectCode(name: "Goal (SB)", shortcut: "C"),
             ProjectCode(name: "Goal (OP)", shortcut: "C")
-         ]
+        ]
     }
     
     enum CodingKeys: String, CodingKey {
@@ -40,7 +43,9 @@ class Project: ObservableObject, Codable {
         name = try values.decode(String.self, forKey: .name)
         videos = try values.decode([ProjectVideo].self, forKey: .videos)
         codes = try values.decode([ProjectCode].self, forKey: .codes)
-        events = try values.decode([ProjectEvent].self, forKey: .events)
+        
+        let events = try values.decode([ProjectEvent].self, forKey: .events)
+        self.events = OrderedDictionary(uniqueKeysWithValues: events.map({ ($0.id, $0) }))
     }
     
     func encode(to encoder: Encoder) throws {

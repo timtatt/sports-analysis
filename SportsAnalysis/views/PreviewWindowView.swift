@@ -12,13 +12,58 @@ import Combine
 
 class PlayerState : ObservableObject {
     @Published var isPlaying = false
-    @Published var wasPlaying = false
     @Published var playbackTime: Float = 0.0
-    @Published var isScrubbing = false
     @Published var playerItem: AVPlayerItem? = nil
+    
+    
+    private var cancellables = Set<AnyCancellable>()
+    private(set) var player: AVPlayer = AVPlayer()
+    
+    private var isScrubbing = false
+    private var wasPlaying = false
     
     var duration: Float {
         get { Float(playerItem?.duration.seconds ?? 0) }
+    }
+    
+    init() {
+        player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 24), queue: .main) {
+            [weak self] time in
+            if (self?.player.timeControlStatus == .playing) {
+                self?.playbackTime = Float(time.seconds)
+            }
+        }
+        
+        cancellables.insert($playerItem.sink { playerItem in
+            self.player.replaceCurrentItem(with: playerItem)
+        })
+        
+        cancellables.insert($playbackTime.sink { time in
+            if (self.player.timeControlStatus == .paused) {
+                self.seekPlayerOnly(seconds: time)
+            }
+        })
+    }
+    
+    func seek(seconds: Float) {
+        playbackTime = seconds
+        seekPlayerOnly(seconds: seconds)
+    }
+    
+    func seekPlayerOnly(seconds: Float) {
+        self.player.seek(to: CMTime(value: Int64(seconds * 1000), timescale: 1000),
+                          toleranceBefore: CMTime.zero,
+                          toleranceAfter: CMTime.zero)
+    }
+    
+    func startScrubbing() {
+        wasPlaying = isPlaying
+        isPlaying = false
+    }
+    
+    func stopScrubbing() {
+        isPlaying = wasPlaying
+        isScrubbing = false
     }
 }
 
@@ -26,37 +71,13 @@ class PlayerState : ObservableObject {
 class PreviewWindowPlayerView : NSView {
     private let playerLayer = AVPlayerLayer()
     var player: AVPlayer?
-    var playerState: PlayerState
-    
-    private var cancellablePlayerItem: AnyCancellable? = nil
-    private var playerItemContext = 0
-    
-    func seek(ms: Double) {
-        self.player?.seek(to: CMTime(value: Int64(ms), timescale: 1000),
-                          toleranceBefore: CMTime.zero,
-                          toleranceAfter: CMTime.zero)
-    }
-    
         
-    init(frame: CGRect, previewWindowPlayer: PreviewWindowPlayer, playerState: PlayerState) {
-        self.playerState = playerState
-        
+    init(frame: CGRect, previewWindowPlayer: PreviewWindowPlayer) {
         super.init(frame: frame)
-        
-        self.cancellablePlayerItem = playerState.$playerItem.sink { playerItem in
-            self.player?.replaceCurrentItem(with: playerItem)
-        }
         
         self.wantsLayer = true
         
-        player = AVPlayer()
-        
-        player!.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 24), queue: .main) {
-            [weak self] time in
-            if (!self!.playerState.isScrubbing) {
-                previewWindowPlayer.playerState.playbackTime = Float(time.seconds)
-            }
-        }
+        player = previewWindowPlayer.playerState.player
         
         playerLayer.player = player!
         
@@ -82,18 +103,12 @@ struct PreviewWindowPlayer : NSViewRepresentable {
     @ObservedObject var playerState: PlayerState
             
     func updateNSView(_ nsView: PreviewWindowPlayerView, context: NSViewRepresentableContext<PreviewWindowPlayer>) {
-
         playerState.isPlaying ? nsView.player?.play() : nsView.player?.pause()
-
-        if (playerState.isScrubbing) {
-            nsView.seek(ms: Double(playerState.playbackTime * 1000))
-        }
-        
         
     }
     func makeNSView(context: Context) -> PreviewWindowPlayerView {
         
-        let view = PreviewWindowPlayerView(frame: .zero, previewWindowPlayer: self, playerState: playerState)
+        let view = PreviewWindowPlayerView(frame: .zero, previewWindowPlayer: self)
         
         return view
     }
@@ -113,13 +128,7 @@ struct PreviewWindowView : View {
             Slider(
                 value: $playerState.playbackTime,
                 in: 0...playerState.duration) { isEditing in
-                    if (isEditing) {
-                        playerState.wasPlaying = playerState.isPlaying
-                        playerState.isPlaying = false
-                    } else {
-                        playerState.isPlaying = playerState.wasPlaying
-                    }
-                    playerState.isScrubbing = isEditing
+                    isEditing ? playerState.startScrubbing() : playerState.stopScrubbing()
                 }
             Text(TimeFormatter.toTimecode(seconds: playerState.playbackTime))
                 .foregroundColor(.blue)
