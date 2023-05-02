@@ -11,7 +11,9 @@ import AVKit
 struct ContentView: View {
     @StateObject var playerState = PlayerState()
     
+    
     @StateObject var projectStore = ProjectStore()
+    @State var playerItem: AVPlayerItem? = nil
     
     var body: some View {
         VStack {
@@ -27,6 +29,11 @@ struct ContentView: View {
                 Button("Load Project") {
                     do {
                         try projectStore.load()
+                        Task {
+                            playerItem = try await projectStore.project.getVideoPlayerItem()
+                            playerState.playerItem = playerItem
+                        }
+                        
                     } catch {
                         print(error)
                         fatalError(error.localizedDescription)
@@ -40,6 +47,16 @@ struct ContentView: View {
                 
                 PreviewWindowView(playerState: playerState)
                     .frame(width: 720.0, height: 576.0)
+                    .task {
+                        do {
+                            projectStore.loadLastProject()
+                            playerItem = try await projectStore.project.getVideoPlayerItem()
+                            playerState.playerItem = playerItem
+                        } catch {
+                            print("Unable to load project")
+                            print(error)
+                        }
+                    }
                 
                 EventManager(project: projectStore.project)
                     .tabItem {

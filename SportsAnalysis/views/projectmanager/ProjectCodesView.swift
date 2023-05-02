@@ -11,7 +11,7 @@ import SwiftUI
 struct ProjectCodesView : View {
     @ObservedObject var project: Project
     // TODO set playbackTime precision to Float
-    @Binding var playbackTime: Double
+    @Binding var playbackTime: Float
     
     var body : some View {
         VStack {
@@ -22,8 +22,10 @@ struct ProjectCodesView : View {
                     Button("+") {
                         // add event to video
                         let event = ProjectEvent(code: code, timestamp: playbackTime)
-                        print(event)
+                        
+                        // TODO optimise this insert
                         project.events.append(event)
+                        project.events.sort(by: { a, b in a.startTime > b.startTime })
                     }
                 }
             }

@@ -14,10 +14,19 @@ struct EventManager : View {
     @State private var selectedEvents = Dictionary<UUID, ProjectEvent>()
     
     var body : some View {
+        var _selectedEvent: ProjectEvent?
+        let selectedEvent = Binding<UUID?>(
+            get: { _selectedEvent?.id },
+            set: { val in _selectedEvent = val != nil ? selectedEvents[val!] ?? nil : nil }
+        )
+        
         VStack {
             Text("Event Manager")
-            List(project.events) { event in
+            List(project.events, selection: selectedEvent) { event in
                 EventListItem(event: event, selectedEvents: $selectedEvents)
+            }
+            Button("Export Selected Events") {
+                print("not implemented")
             }
         }
     }
@@ -44,7 +53,7 @@ struct EventListItem : View {
         HStack {
             Toggle("", isOn: isSelected)
                 .toggleStyle(.checkbox)
-            Text("\(event.startTime): \(event.code.name)")
+            Text("\(TimeFormatter.toTimecode(seconds: event.startTime)): \(event.code.name) (\(TimeFormatter.toGeotime(seconds: event.duration)))")
 //                    Button("x") {
 //                        project.events.remove(at: index)
 //                    }

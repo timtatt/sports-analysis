@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AVFoundation
 
 class Project: ObservableObject, Codable {
     @Published var name: String
@@ -50,5 +51,40 @@ class Project: ObservableObject, Codable {
         try container.encode(events, forKey: .events)
     }
     
+    func getVideoPlayerItem() async throws -> AVPlayerItem {
+        let composition = AVMutableComposition()
+    
+        let videoTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+            
+        do {
+            let videos = ["M2U01222", "M2U01223"]
+            
+            for videoName in videos {
+                logger.info("Loading video with name \(videoName)")
+                
+                let videoUrl = Bundle.main.url(forResource: videoName, withExtension: "MPG")!
+                let asset = AVAsset(url: videoUrl)
+                let assetDuration = try await asset.load(.duration)
+                let assetVideoTrack = try await asset.loadTracks(withMediaType: .video).first!
+                let assetAudioTrack = try await asset.loadTracks(withMediaType: .audio).first!
+                
+                try videoTrack!.insertTimeRange(
+                    CMTimeRange(start: .zero, duration: assetDuration),
+                    of: assetVideoTrack,
+                    at: .zero)
+                
+                try audioTrack!.insertTimeRange(
+                    CMTimeRange(start: .zero, duration: assetDuration),
+                    of: assetAudioTrack,
+                    at: .zero)
+            }
+        } catch {
+            logger.error("Unable to load videos: \(error.localizedDescription)")
+            throw error
+        }
+        
+        return AVPlayerItem(asset: composition)
+    }
     
 }

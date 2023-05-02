@@ -10,22 +10,26 @@ import AppKit
 import UniformTypeIdentifiers
 
 class ProjectStore : ObservableObject {
+    static let LAST_PROJECT_PATH_KEY = "LastProjectPath"
+    
     @Published var project: Project = Project()
     @Published var projectFilePath: URL? = nil
     
-//    func load() async throws {
-//            let task = Task<[DailyScrum], Error> {
-//                let fileURL = try Self.fileURL()
-//                guard let data = try? Data(contentsOf: fileURL) else {
-//                    return []
-//                }
-//                let dailyScrums = try JSONDecoder().decode([DailyScrum].self, from: data)
-//                return dailyScrums
-//            }
-//            let scrums = try await task.value
-//            self.scrums = scrums
-//        }
-    
+    func loadLastProject() {
+        let lastProjectPath = UserDefaults.standard.string(forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
+        
+        if (lastProjectPath != nil) {
+            do {
+                let lastProjectPathUrl = URL(fileURLWithPath: lastProjectPath!)
+                print(lastProjectPathUrl)
+                try load(filePath: lastProjectPathUrl)
+            } catch {
+                // TODO use proper logger
+                print("Unable to load previous project")
+                print(error)
+            }
+        }
+    }
     
     func load() throws {
         let panel = NSOpenPanel()
@@ -36,32 +40,43 @@ class ProjectStore : ObservableObject {
         panel.canChooseDirectories = false
         panel.allowedContentTypes = [UTType.json]
         
-        projectFilePath = panel.runModal() == .OK ? panel.url : nil
+        let filePath = panel.runModal() == .OK ? panel.url : nil
         
-        if (projectFilePath == nil) {
-            return;
+        if (filePath != nil) {
+            try load(filePath: filePath!)
         }
+    }
+    
+    func setProjectPath(filePath: URL) {
+        UserDefaults.standard.set(filePath.path, forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
+    }
+    
+    func load(filePath: URL) throws {
+        let data = try Data(contentsOf: filePath)
         
-        let data = try Data(contentsOf: projectFilePath!)
-        print(data)
         project = try JSONDecoder().decode(Project.self, from: data)
+        
+        setProjectPath(filePath: filePath)
     }
 
     func save() throws {
+        var filePath = projectFilePath
         if (projectFilePath == nil) {
             let panel = NSSavePanel()
             panel.title = "Save project file"
             panel.prompt = "Save"
             panel.message = "Choose where to save your project file"
             panel.allowedContentTypes = [UTType.json]
-            projectFilePath = panel.runModal() == .OK ? panel.url : nil
+            filePath = panel.runModal() == .OK ? panel.url : nil
             
-            if (projectFilePath == nil) {
+            if (filePath == nil) {
                 return;
             }
         }
         
         let data = try JSONEncoder().encode(project)
-        try data.write(to: projectFilePath!)
+        try data.write(to: filePath!)
+        
+        setProjectPath(filePath: filePath!)
     }
 }

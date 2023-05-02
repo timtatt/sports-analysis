@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F697FBD2A012C5E001C4F66 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F697FBC2A012C5E001C4F66 /* Logging.swift */; };
 		0FA3A9EC29F92BA800B9FB29 /* SportsAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */; };
 		0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */; };
 		0FA3A9F029F92BA900B9FB29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EF29F92BA900B9FB29 /* Assets.xcassets */; };
@@ -27,6 +28,7 @@
 		0FA3AA3129FBE9B300B9FB29 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3029FBE9B300B9FB29 /* Color.swift */; };
 		0FA3AA3329FBEC3700B9FB29 /* ProjectCodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3229FBEC3700B9FB29 /* ProjectCodesView.swift */; };
 		0FA3AA3529FBED8E00B9FB29 /* ProjectEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3429FBED8E00B9FB29 /* ProjectEvent.swift */; };
+		0FA3AA3829FE352C00B9FB29 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0F697FBC2A012C5E001C4F66 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		0FA3A9E829F92BA800B9FB29 /* SportsAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportsAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAnalysisApp.swift; sourceTree = "<group>"; };
 		0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -71,6 +74,7 @@
 		0FA3AA3029FBE9B300B9FB29 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		0FA3AA3229FBEC3700B9FB29 /* ProjectCodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCodesView.swift; sourceTree = "<group>"; };
 		0FA3AA3429FBED8E00B9FB29 /* ProjectEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEvent.swift; sourceTree = "<group>"; };
+		0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +125,7 @@
 		0FA3A9EA29F92BA800B9FB29 /* SportsAnalysis */ = {
 			isa = PBXGroup;
 			children = (
+				0FA3AA3629FE352100B9FB29 /* helper */,
 				0FA3AA2229FAA50A00B9FB29 /* models */,
 				0FA3AA1F29FAA3CC00B9FB29 /* stores */,
 				0FA3AA1E29FAA3BF00B9FB29 /* views */,
@@ -198,6 +203,15 @@
 				0FA3AA3229FBEC3700B9FB29 /* ProjectCodesView.swift */,
 			);
 			path = projectmanager;
+			sourceTree = "<group>";
+		};
+		0FA3AA3629FE352100B9FB29 /* helper */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */,
+				0F697FBC2A012C5E001C4F66 /* Logging.swift */,
+			);
+			path = helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -333,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FA3AA2B29FAB1C100B9FB29 /* ProjectSettingsView.swift in Sources */,
+				0F697FBD2A012C5E001C4F66 /* Logging.swift in Sources */,
 				0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */,
 				0FA3AA3129FBE9B300B9FB29 /* Color.swift in Sources */,
 				0FA3AA2929FAB0B200B9FB29 /* ProjectManagerView.swift in Sources */,
@@ -341,6 +356,7 @@
 				0FA3AA2F29FBE76800B9FB29 /* ProjectCode.swift in Sources */,
 				0FA3AA1D29FA9F8F00B9FB29 /* EventManager.swift in Sources */,
 				0FA3AA1B29F935BC00B9FB29 /* PreviewWindowView.swift in Sources */,
+				0FA3AA3829FE352C00B9FB29 /* TimeFormatter.swift in Sources */,
 				0FA3AA3329FBEC3700B9FB29 /* ProjectCodesView.swift in Sources */,
 				0FA3AA3529FBED8E00B9FB29 /* ProjectEvent.swift in Sources */,
 				0FA3AA2429FAA51800B9FB29 /* Project.swift in Sources */,

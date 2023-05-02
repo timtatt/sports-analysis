@@ -12,10 +12,10 @@ class ProjectEvent : Codable, Identifiable, ObservableObject {
     var id: UUID
     
     var code: ProjectCode
-    var startTime: Double
-    var endTime: Double
+    var startTime: Float
+    var endTime: Float
     
-    var duration: Double {
+    var duration: Float {
         get {
             return endTime - startTime
         }
@@ -29,14 +29,14 @@ class ProjectEvent : Codable, Identifiable, ObservableObject {
         case code, startTime, endTime
     }
     
-    init(code: ProjectCode, timestamp: Double) {
+    init(code: ProjectCode, timestamp: Float) {
         self.id = UUID()
         self.code = code
         self.startTime = max(timestamp - code.leadingTime, 0)
         self.endTime = timestamp + code.trailingTime
     }
     
-    init(code: ProjectCode, startTime: Double, endTime: Double) {
+    init(code: ProjectCode, startTime: Float, endTime: Float) {
         self.id = UUID()
         self.code = code
         self.startTime = startTime
@@ -47,8 +47,8 @@ class ProjectEvent : Codable, Identifiable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = UUID()
         self.code = try container.decode(ProjectCode.self, forKey: .code)
-        self.startTime = try container.decode(Double.self, forKey: .startTime)
-        self.endTime = try container.decode(Double.self, forKey: .endTime)
+        self.startTime = try container.decode(Float.self, forKey: .startTime)
+        self.endTime = try container.decode(Float.self, forKey: .endTime)
     }
 
 }
