@@ -8,12 +8,12 @@
 import Foundation
 import AppKit
 
-struct Color : Codable, Hashable {
+struct ProjectCodeColor : Codable, Hashable {
     var red : CGFloat = 0.0, green: CGFloat = 0.0, blue: CGFloat = 0.0, alpha: CGFloat = 0.0
     
-    static var white: Color {
+    static var white: ProjectCodeColor {
         get {
-            Color(nsColor: .white)
+            ProjectCodeColor(nsColor: .white)
         }
     }
     

@@ -45,18 +45,24 @@ struct ContentView: View {
                 
                 ProjectManagerView(playerState: playerState, project: projectStore.project)
                 
-                PreviewWindowView(playerState: playerState)
-                    .frame(width: 720.0, height: 576.0)
-                    .task {
-                        do {
-                            projectStore.loadLastProject()
-                            playerItem = try await projectStore.project.getVideoPlayerItem()
-                            playerState.playerItem = playerItem
-                        } catch {
-                            print("Unable to load project")
-                            print(error)
+                VStack {
+                    PreviewWindowView(playerState: playerState)
+                        .frame(height: 576.0)
+                        .task {
+                            do {
+                                projectStore.loadLastProject()
+                                playerItem = try await projectStore.project.getVideoPlayerItem()
+                                playerState.playerItem = playerItem
+                            } catch {
+                                print("Unable to load project")
+                                print(error)
+                            }
                         }
-                    }
+                    
+                    VideoTimeline(playerState: playerState)
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(width: 720)
                 
                 EventManager(project: projectStore.project, playerState: playerState)
                     .tabItem {

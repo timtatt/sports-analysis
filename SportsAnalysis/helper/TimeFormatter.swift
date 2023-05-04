@@ -14,9 +14,7 @@ struct TimeFormatter {
         let MM = Int(seconds.truncatingRemainder(dividingBy: 3600) / 60)
         let HH = Int(seconds / 3600)
         
-        return [HH, MM, SS]
-            .map({ val in String(format: "%02d", val) })
-            .joined(separator: ":")
+        return String(format: "%01d:%02d:%02d", HH, MM, SS)
     }
     
     static func toGeotime(seconds: Float) -> String {

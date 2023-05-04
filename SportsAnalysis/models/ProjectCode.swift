@@ -9,13 +9,13 @@ import AppKit
 
 struct ProjectCode : Codable, Hashable {
     var name: String
-    var color: Color
+    var color: ProjectCodeColor
     
     var shortcut: String
     var leadingTime: Float = 10
     var trailingTime: Float = 10
     
-    init(name: String, color: Color = .white, shortcut: String) {
+    init(name: String, color: ProjectCodeColor = .white, shortcut: String) {
         self.name = name
         self.color = color
         self.shortcut = shortcut
