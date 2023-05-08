@@ -19,6 +19,8 @@ class PlayerState : ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private(set) var player: AVPlayer = AVPlayer()
     
+    
+    
     private var isScrubbing = false
     private var wasPlaying = false
     
@@ -27,12 +29,15 @@ class PlayerState : ObservableObject {
     }
     
     init() {
-        player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 24), queue: .main) {
+        player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 2), queue: .main) {
             [weak self] time in
             if (self?.player.timeControlStatus == .playing) {
-                self?.playbackTime = Float(time.seconds)
+                withAnimation(.linear(duration: 0.5)) {
+                    self?.playbackTime = Float(time.seconds)
+                }
             }
         }
+        
         
         cancellables.insert($playerItem.sink { playerItem in
             self.player.replaceCurrentItem(with: playerItem)
@@ -46,8 +51,14 @@ class PlayerState : ObservableObject {
     }
     
     func seek(seconds: Float) {
+        let wasPlaying = isPlaying
+        player.pause()
         playbackTime = seconds
         seekPlayerOnly(seconds: seconds)
+        
+        if (wasPlaying) {
+            player.play()
+        }
     }
     
     func seekPlayerOnly(seconds: Float) {
