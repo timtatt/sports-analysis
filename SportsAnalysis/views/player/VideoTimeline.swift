@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import OrderedCollections
 
 struct Tick : Hashable {
     let time: Float
@@ -20,10 +21,11 @@ struct Tick : Hashable {
 
 struct VideoTimeline : View {
     
-    @State var pixelsPerSecond: Float = 12
+    var events: OrderedDictionary<UUID, ProjectEvent>
     
     @ObservedObject var playerState: PlayerState
     
+    @State var pixelsPerSecond: Float = 12
     @State var mouseLocation: NSPoint? = nil
     @State var isMouseOver: Bool = false
     @State var scrollOffset: CGFloat = 0.0
@@ -47,20 +49,9 @@ struct VideoTimeline : View {
                     GeometryReader { outerScrollGeometry in
                         TrackableScrollView([.horizontal], contentOffset: $scrollOffset) {
                             ZStack(alignment: .bottomLeading) {
-                                
                                 VStack(spacing: 0) {
-                                    
-                                    
-                                    // Timecode Bar
                                     TimecodeBar(videoDuration: playerState.duration, pixelsPerSecond: pixelsPerSecond, scrollOffset: scrollOffset, timelineWrapperWidth: outerScrollGeometry.size.width)
-                                    
-                                    // Event Bar
-                                    ZStack {
-                                        Rectangle()
-                                            .fill(.red)
-                                        Text("Event bar")
-                                    }
-                                    .frame(height: 40)
+                                    EventBar(videoDuration: playerState.duration, pixelsPerSecond: pixelsPerSecond, scrollOffset: scrollOffset, timelineWrapperWidth: outerScrollGeometry.size.width, events: events)
                                 }
                                 
                                 // Scrubber
@@ -112,6 +103,43 @@ struct VideoTimeline : View {
 struct TickSetting {
     let minorTickSeconds: Float
     let majorTickSeconds: Float
+}
+
+struct EventBar : View {
+    var videoDuration: Float
+    var pixelsPerSecond: Float
+    var scrollOffset: CGFloat
+    var timelineWrapperWidth: CGFloat
+    
+    var events: OrderedDictionary<UUID, ProjectEvent>
+    
+    func getEventsInView() -> [ProjectEvent] {
+        let viewStartTime: Float = Float(scrollOffset) / pixelsPerSecond;
+        let viewEndTime: Float = viewStartTime + Float(timelineWrapperWidth) / pixelsPerSecond;
+        
+        var eventsInView: [ProjectEvent] = []
+        
+        for event in events.values {
+            if (event.endTime >= viewStartTime || event.startTime < viewEndTime) {
+                eventsInView.append(event)
+            }
+        }
+        
+        return eventsInView
+    }
+    
+    var body : some View {
+        ZStack {
+            Rectangle()
+                .fill(.red)
+            Text("Event bar")
+            Rectangle()
+                .fill(.brown)
+                .offset(x: 10)
+                .frame(width: 20, height: 40)
+        }
+        .frame(height: 40)
+    }
 }
 
 struct TimecodeBar : View {
@@ -194,7 +222,6 @@ struct TimecodeBar : View {
                     
             // todo use canvas for timecode bar performance
             GeometryReader { geometry in
-                
                 ZStack(alignment: .bottomLeading) {
                     Rectangle()
                         .fill(.cyan)
@@ -222,7 +249,7 @@ struct VideoTimeline_Previews : PreviewProvider {
     static var previews: some View {
         let state = PlayerState()
         HStack {
-            VideoTimeline(playerState: state)
+            VideoTimeline(events: OrderedDictionary(), playerState: state)
         }
         .onAppear {
             state.playbackTime = 11.2

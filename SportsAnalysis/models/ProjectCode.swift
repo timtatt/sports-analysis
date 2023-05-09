@@ -15,7 +15,7 @@ struct ProjectCode : Codable, Hashable {
     var leadingTime: Float = 10
     var trailingTime: Float = 10
     
-    init(name: String, color: ProjectCodeColor = .white, shortcut: String) {
+    init(name: String, color: ProjectCodeColor = ProjectCodeColor(.white), shortcut: String) {
         self.name = name
         self.color = color
         self.shortcut = shortcut

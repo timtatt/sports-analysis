@@ -18,6 +18,9 @@ struct ProjectCodesView : View {
             Text("\(playbackTime)")
             ForEach(project.codes, id: \.self) { code in
                 HStack {
+                    Circle()
+                        .fill(Color(code.color.nsColor))
+                        .frame(width: 20, height: 20)
                     Text(code.name)
                     Button("+") {
                         // add event to video
@@ -25,7 +28,7 @@ struct ProjectCodesView : View {
                         
                         // TODO optimise this insert
                         project.events[event.id] = event
-                        project.events.sort(by: { a, b in a.value.startTime > b.value.startTime })
+                        project.events.sort(by: { a, b in a.value.startTime < b.value.startTime })
                     }
                 }
             }

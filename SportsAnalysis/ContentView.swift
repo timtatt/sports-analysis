@@ -18,6 +18,9 @@ struct ContentView: View {
     var body: some View {
         VStack {
             HStack {
+                Button("New Project") {
+                    projectStore.newProject()
+                }
                 Button("Save Project") {
                     do {
                         try projectStore.save()
@@ -59,7 +62,7 @@ struct ContentView: View {
                             }
                         }
                     
-                    VideoTimeline(playerState: playerState)
+                    VideoTimeline(events: projectStore.project.events, playerState: playerState)
                         .frame(maxWidth: .infinity)
                 }
                 .frame(width: 720)

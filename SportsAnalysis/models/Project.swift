@@ -24,13 +24,13 @@ class Project: ObservableObject, Codable {
         self.events = OrderedDictionary(uniqueKeysWithValues: events.map({ ($0.id, $0) }))
         
         self.codes = [
-            ProjectCode(name: "Inside 50 (SB)", shortcut: "A"),
-            ProjectCode(name: "Inside 50 (OP)", shortcut: "B"),
-            ProjectCode(name: "Centre Bounce", shortcut: "C"),
-            ProjectCode(name: "Stoppage", shortcut: "C"),
-            ProjectCode(name: "Defensive Pressure", shortcut: "C"),
-            ProjectCode(name: "Goal (SB)", shortcut: "C"),
-            ProjectCode(name: "Goal (OP)", shortcut: "C")
+            ProjectCode(name: "Inside 50 (SB)", color: ProjectCodeColor(.red), shortcut: "A"),
+            ProjectCode(name: "Inside 50 (OP)", color: ProjectCodeColor(.orange), shortcut: "B"),
+            ProjectCode(name: "Centre Bounce", color: ProjectCodeColor(.yellow), shortcut: "C"),
+            ProjectCode(name: "Stoppage", color: ProjectCodeColor(.green), shortcut: "C"),
+            ProjectCode(name: "Defensive Pressure", color: ProjectCodeColor(.blue), shortcut: "C"),
+            ProjectCode(name: "Goal (SB)", color: ProjectCodeColor(.purple), shortcut: "C"),
+            ProjectCode(name: "Goal (OP)", color: ProjectCodeColor(.systemPink), shortcut: "C")
         ]
     }
     

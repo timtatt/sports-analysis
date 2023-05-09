@@ -60,6 +60,9 @@ struct EventListItem : View {
         HStack {
             Toggle("", isOn: isSelected)
                 .toggleStyle(.checkbox)
+            Circle()
+                .fill(Color(event.code.color.nsColor))
+                .frame(width: 20, height: 20)
             Text("\(TimeFormatter.toTimecode(seconds: event.startTime)): \(event.code.name) (\(TimeFormatter.toGeotime(seconds: event.duration)))")
 //                    Button("x") {
 //                        project.events.remove(at: index)

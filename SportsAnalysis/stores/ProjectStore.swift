@@ -15,6 +15,11 @@ class ProjectStore : ObservableObject {
     @Published var project: Project = Project()
     @Published var projectFilePath: URL? = nil
     
+    func newProject() {
+        project = Project()
+        projectFilePath = nil
+    }
+    
     func loadLastProject() {
         let lastProjectBookmark = UserDefaults.standard.data(forKey: ProjectStore.LAST_PROJECT_PATH_KEY)
         
