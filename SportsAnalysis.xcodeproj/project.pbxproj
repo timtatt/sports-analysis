@@ -11,6 +11,11 @@
 		0F697FC02A013AD5001C4F66 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 0F697FBF2A013AD5001C4F66 /* OrderedCollections */; };
 		0F697FC32A027984001C4F66 /* VideoTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F697FC22A027984001C4F66 /* VideoTimeline.swift */; };
 		0F8DFD972A091A4F00D79D1F /* TrackableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFD962A091A4F00D79D1F /* TrackableScrollView.swift */; };
+		0F8DFD992A0BBFD300D79D1F /* TimecodeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFD982A0BBFD300D79D1F /* TimecodeBar.swift */; };
+		0F8DFD9B2A0BBFDB00D79D1F /* EventBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFD9A2A0BBFDB00D79D1F /* EventBar.swift */; };
+		0F8DFD9D2A0BBFF200D79D1F /* TimelineScrollbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFD9C2A0BBFF200D79D1F /* TimelineScrollbar.swift */; };
+		0F8DFD9F2A0BC2FA00D79D1F /* RoundedCornerRectangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFD9E2A0BC2FA00D79D1F /* RoundedCornerRectangle.swift */; };
+		0F8DFDA12A0BC73E00D79D1F /* BoundsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFDA02A0BC73E00D79D1F /* BoundsChecker.swift */; };
 		0FA3A9EC29F92BA800B9FB29 /* SportsAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */; };
 		0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */; };
 		0FA3A9F029F92BA900B9FB29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EF29F92BA900B9FB29 /* Assets.xcassets */; };
@@ -55,6 +60,11 @@
 		0F697FBC2A012C5E001C4F66 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		0F697FC22A027984001C4F66 /* VideoTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTimeline.swift; sourceTree = "<group>"; };
 		0F8DFD962A091A4F00D79D1F /* TrackableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackableScrollView.swift; sourceTree = "<group>"; };
+		0F8DFD982A0BBFD300D79D1F /* TimecodeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimecodeBar.swift; sourceTree = "<group>"; };
+		0F8DFD9A2A0BBFDB00D79D1F /* EventBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBar.swift; sourceTree = "<group>"; };
+		0F8DFD9C2A0BBFF200D79D1F /* TimelineScrollbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScrollbar.swift; sourceTree = "<group>"; };
+		0F8DFD9E2A0BC2FA00D79D1F /* RoundedCornerRectangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerRectangle.swift; sourceTree = "<group>"; };
+		0F8DFDA02A0BC73E00D79D1F /* BoundsChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundsChecker.swift; sourceTree = "<group>"; };
 		0FA3A9E829F92BA800B9FB29 /* SportsAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportsAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAnalysisApp.swift; sourceTree = "<group>"; };
 		0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -108,18 +118,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0F697FC12A027973001C4F66 /* player */ = {
+		0F697FC12A027973001C4F66 /* timeline */ = {
 			isa = PBXGroup;
 			children = (
 				0F697FC22A027984001C4F66 /* VideoTimeline.swift */,
+				0F8DFD982A0BBFD300D79D1F /* TimecodeBar.swift */,
+				0F8DFD9A2A0BBFDB00D79D1F /* EventBar.swift */,
+				0F8DFD9C2A0BBFF200D79D1F /* TimelineScrollbar.swift */,
 			);
-			path = player;
+			path = timeline;
 			sourceTree = "<group>";
 		};
 		0F8DFD952A091A3F00D79D1F /* shared */ = {
 			isa = PBXGroup;
 			children = (
 				0F8DFD962A091A4F00D79D1F /* TrackableScrollView.swift */,
+				0F8DFD9E2A0BC2FA00D79D1F /* RoundedCornerRectangle.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -191,7 +205,7 @@
 		0FA3AA1E29FAA3BF00B9FB29 /* views */ = {
 			isa = PBXGroup;
 			children = (
-				0F697FC12A027973001C4F66 /* player */,
+				0F697FC12A027973001C4F66 /* timeline */,
 				0FA3AA2729FAB09400B9FB29 /* projectmanager */,
 				0FA3AA1A29F935BC00B9FB29 /* PreviewWindowView.swift */,
 			);
@@ -234,6 +248,7 @@
 			children = (
 				0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */,
 				0F697FBC2A012C5E001C4F66 /* Logging.swift */,
+				0F8DFDA02A0BC73E00D79D1F /* BoundsChecker.swift */,
 			);
 			path = helper;
 			sourceTree = "<group>";
@@ -381,10 +396,15 @@
 				0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */,
 				0FA3AA3129FBE9B300B9FB29 /* ProjectCodeColor.swift in Sources */,
 				0F8DFD972A091A4F00D79D1F /* TrackableScrollView.swift in Sources */,
+				0F8DFD9D2A0BBFF200D79D1F /* TimelineScrollbar.swift in Sources */,
 				0FA3AA2929FAB0B200B9FB29 /* ProjectManagerView.swift in Sources */,
 				0FA3AA2129FAA44D00B9FB29 /* ProjectStore.swift in Sources */,
+				0F8DFD992A0BBFD300D79D1F /* TimecodeBar.swift in Sources */,
+				0F8DFD9F2A0BC2FA00D79D1F /* RoundedCornerRectangle.swift in Sources */,
+				0F8DFD9B2A0BBFDB00D79D1F /* EventBar.swift in Sources */,
 				0FA3A9EC29F92BA800B9FB29 /* SportsAnalysisApp.swift in Sources */,
 				0FA3AA2F29FBE76800B9FB29 /* ProjectCode.swift in Sources */,
+				0F8DFDA12A0BC73E00D79D1F /* BoundsChecker.swift in Sources */,
 				0FA3AA1D29FA9F8F00B9FB29 /* EventManager.swift in Sources */,
 				0FA3AA1B29F935BC00B9FB29 /* PreviewWindowView.swift in Sources */,
 				0FA3AA3829FE352C00B9FB29 /* TimeFormatter.swift in Sources */,

@@ -15,11 +15,7 @@ class ProjectEvent : Codable, Identifiable, ObservableObject {
     var startTime: Float
     var endTime: Float
     
-    var duration: Float {
-        get {
-            return endTime - startTime
-        }
-    }
+    var duration: Float { endTime - startTime }
     
     static func == (lhs: ProjectEvent, rhs: ProjectEvent) -> Bool {
         return lhs.id == rhs.id

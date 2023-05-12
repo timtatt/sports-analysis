@@ -7,54 +7,68 @@
 
 import Foundation
 import SwiftUI
+import AppKit
+import Combine
 
-struct ScrollOffsetPreferenceKey: PreferenceKey {
-    typealias Value = [CGFloat]
+struct TrackableScrollView<Content : View> : NSViewRepresentable {
     
-    static var defaultValue: [CGFloat] = [0]
+    @Binding var scrollPosition: CGPoint
+    @ViewBuilder var content: () -> Content
     
-    static func reduce(value: inout [CGFloat], nextValue: () -> [CGFloat]) {
-        value.append(contentsOf: nextValue())
-    }
-}
-
-public struct TrackableScrollView<Content>: View where Content: View {
-    let axes: Axis.Set
-    let showIndicators: Bool
-    @Binding var contentOffset: CGFloat
-    let content: Content
-    
-    public init(_ axes: Axis.Set = .vertical, showIndicators: Bool = true, contentOffset: Binding<CGFloat>, @ViewBuilder content: () -> Content) {
-        self.axes = axes
-        self.showIndicators = showIndicators
-        self._contentOffset = contentOffset
-        self.content = content()
+    init(scrollPosition: Binding<CGPoint>, @ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+        self._scrollPosition = scrollPosition
     }
     
-    public var body: some View {
-        GeometryReader { outsideProxy in
-            ScrollView(self.axes, showsIndicators: self.showIndicators) {
-                ZStack(alignment: self.axes == .vertical ? .top : .leading) {
-                    GeometryReader { insideProxy in
-                        Color.clear
-                            .preference(key: ScrollOffsetPreferenceKey.self, value: [self.calculateContentOffset(fromOutsideProxy: outsideProxy, insideProxy: insideProxy)])
-                    }
-                    VStack {
-                        self.content
-                    }
-                }
-            }
-            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                self.contentOffset = value[0]
+    func makeNSView(context: Context) -> NSScrollView {
+        let view = NSScrollView()
+        
+        view.hasVerticalScroller = true
+        view.hasHorizontalScroller = true
+        
+        NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.viewScrolled(_:)), name: NSView.boundsDidChangeNotification, object: view.contentView)
+        
+        let hostingView = NSHostingView(rootView: content())
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.documentView = hostingView
+        return view
+    }
+
+    func updateNSView(_ view: NSScrollView, context: Context) {
+        
+        let hostingView = view.documentView as! NSHostingView<Content>
+        hostingView.rootView = content()
+        
+        view.contentView.scroll(to: scrollPosition)
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self, scrollPosition: $scrollPosition)
+    }
+    
+    class Coordinator {
+        @Binding var scrollPosition: CGPoint
+        var cachedScrollPosition: CGPoint? = nil
+        
+        let parent: TrackableScrollView
+        
+        init(_ parent: TrackableScrollView, scrollPosition: Binding<CGPoint>) {
+            self.parent = parent
+            self._scrollPosition = scrollPosition
+        }
+        
+        @objc func viewScrolled(_ notification: NSNotification) {
+            DispatchQueue.main.async {
+                let contentView = notification.object as! NSView
+                
+                self.cachedScrollPosition = contentView.bounds.origin
+                self.scrollPosition = contentView.bounds.origin
             }
         }
-    }
-    
-    private func calculateContentOffset(fromOutsideProxy outsideProxy: GeometryProxy, insideProxy: GeometryProxy) -> CGFloat {
-        if axes == .vertical {
-            return outsideProxy.frame(in: .global).minY - insideProxy.frame(in: .global).minY
-        } else {
-            return outsideProxy.frame(in: .global).minX - insideProxy.frame(in: .global).minX
+        
+        deinit {
+            NotificationCenter.default.removeObserver(self)
         }
     }
 }

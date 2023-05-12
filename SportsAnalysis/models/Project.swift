@@ -53,7 +53,7 @@ class Project: ObservableObject, Codable {
         try container.encode(name, forKey: .name)
         try container.encode(videos, forKey: .videos)
         try container.encode(codes, forKey: .codes)
-        try container.encode(events, forKey: .events)
+        try container.encode(events.values.elements, forKey: .events)
     }
     
     func getVideoPlayerItem() async throws -> AVPlayerItem {
