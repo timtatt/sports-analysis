@@ -25,6 +25,10 @@ struct VideoTimeline : View {
     }
     
     let maxPixelsPerSecond: Float = 24
+    
+    @GestureState var magnifyBy = 1.0
+    @State var isZooming: Bool = false
+    @State var startingPixelsPerSecond: Float = 0
    
     
     var body : some View {
@@ -39,16 +43,25 @@ struct VideoTimeline : View {
                     
                     return (minPixelsPerSecond > 24 ? 1 : minPixelsPerSecond)...maxPixelsPerSecond
                 }
-                
-                Slider(value: $pixelsPerSecond, in: pixelsPerSecondScale)
+
                 ZStack {
                     GeometryReader { outerScrollGeometry in
                         TrackableScrollView(scrollPosition: $scrollPosition) {
                             ZStack(alignment: .bottomLeading) {
                                 Color.red.ignoresSafeArea()
                                 VStack(spacing: 0) {
-                                    TimecodeBar(videoDuration: playerState.duration, pixelsPerSecond: pixelsPerSecond, scrollOffset: scrollPosition.x, timelineWrapperWidth: outerScrollGeometry.size.width)
-                                    EventBar(videoDuration: playerState.duration, pixelsPerSecond: pixelsPerSecond, scrollOffset: scrollPosition.x, timelineWrapperWidth: outerScrollGeometry.size.width, events: events)
+                                    TimecodeBar(
+                                        videoDuration: playerState.duration,
+                                        pixelsPerSecond: pixelsPerSecond,
+                                        scrollOffset: scrollPosition.x,
+                                        timelineWrapperWidth: outerScrollGeometry.size.width)
+                                    
+                                    EventBar(
+                                        videoDuration: playerState.duration,
+                                        pixelsPerSecond: pixelsPerSecond,
+                                        scrollOffset: scrollPosition.x,
+                                        timelineWrapperWidth: outerScrollGeometry.size.width,
+                                        events: events)
                                 }
                                 
                                 // Scrubber
@@ -57,14 +70,28 @@ struct VideoTimeline : View {
                                     .frame(width: 1)
                                     .offset(x: CGFloat(playerState.playbackTime * pixelsPerSecond), y: 0)
                             }
-                            
+                            .gesture(MagnificationGesture()
+                                .onChanged { scale in
+                                    if (!isZooming) {
+                                        isZooming = true
+                                        startingPixelsPerSecond = pixelsPerSecond
+                                    }
+                                    pixelsPerSecond = BoundsChecker.minmax(minBound: Float(minPixelsPerSecond), value: startingPixelsPerSecond * Float(scale.magnitude), maxBound: maxPixelsPerSecond)
+                                }
+                                .onEnded { _ in isZooming = false }
+                            )
                             .frame(width: timelineWidth, height: outerScrollGeometry.size.height)
                         }
                         .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
                     }
                 }
                 .frame(height: 66)
-                TimelineScrollbar(scrollPosition: $scrollPosition.x, pixelsPerSecond: $pixelsPerSecond, maxPixelsPerSecond: CGFloat(maxPixelsPerSecond), minPixelsPerSecond: minPixelsPerSecond)
+                TimelineScrollbar(
+                    scrollPosition: $scrollPosition.x,
+                    pixelsPerSecond: $pixelsPerSecond,
+                    maxPixelsPerSecond: CGFloat(maxPixelsPerSecond),
+                    minPixelsPerSecond: minPixelsPerSecond
+                )
             }
         }
     }

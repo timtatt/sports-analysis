@@ -84,7 +84,7 @@ struct TimelineScrollbarOverlay : View {
             ZStack(alignment: .leading) {
                 Rectangle()
                     .fill(Color(.white).opacity(overlayHovering ? 0.6 : 0.4))
-                    .frame(width: max(0, overlayWidth - handleWidth * 2), height: geometry.size.height)
+                    .frame(width: max(0, overlayWidth - handleWidth * 2), height: max(0, geometry.size.height))
                     .offset(x: overlayStart + handleWidth)
                     .cursor(.openHand)
                     .onHover { isHovering in overlayHovering = isHovering}
