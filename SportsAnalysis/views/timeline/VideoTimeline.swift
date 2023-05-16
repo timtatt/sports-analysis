@@ -17,31 +17,28 @@ struct VideoTimeline : View {
     
     @State var scrollPosition: CGPoint = CGPoint(x: 0, y: 0)
     
-    @State var pixelsPerSecond: Float = 12
-    @State var isMouseOver: Bool = false
+    @State var zoomLevel: Float = 12
     
     var timelineWidth: CGFloat {
-        CGFloat(playerState.duration * pixelsPerSecond)
+        CGFloat(playerState.duration * zoomLevel)
     }
     
-    let maxPixelsPerSecond: Float = 24
-    
-    @GestureState var magnifyBy = 1.0
+    let maxZoomLevel: Float = 18
     @State var isZooming: Bool = false
-    @State var startingPixelsPerSecond: Float = 0
+    @State var startingZoomLevel: Float = 0
    
     
     var body : some View {
         GeometryReader { geometry in
-            var minPixelsPerSecond : CGFloat {
+            var minZoomLevel : CGFloat {
                 geometry.size.width / CGFloat(playerState.duration)
             }
             
             VStack {
-                var pixelsPerSecondScale: ClosedRange<Float> {
-                    let minPixelsPerSecond = Float(minPixelsPerSecond)
+                var zoomLevelScale: ClosedRange<Float> {
+                    let minZoomLevel = Float(minZoomLevel)
                     
-                    return (minPixelsPerSecond > 24 ? 1 : minPixelsPerSecond)...maxPixelsPerSecond
+                    return (minZoomLevel > 24 ? 1 : minZoomLevel)...maxZoomLevel
                 }
 
                 ZStack {
@@ -52,13 +49,13 @@ struct VideoTimeline : View {
                                 VStack(spacing: 0) {
                                     TimecodeBar(
                                         videoDuration: playerState.duration,
-                                        pixelsPerSecond: pixelsPerSecond,
+                                        zoomLevel: zoomLevel,
                                         scrollOffset: scrollPosition.x,
                                         timelineWrapperWidth: outerScrollGeometry.size.width)
                                     
                                     EventBar(
                                         videoDuration: playerState.duration,
-                                        pixelsPerSecond: pixelsPerSecond,
+                                        zoomLevel: zoomLevel,
                                         scrollOffset: scrollPosition.x,
                                         timelineWrapperWidth: outerScrollGeometry.size.width,
                                         events: events)
@@ -68,15 +65,15 @@ struct VideoTimeline : View {
                                 Rectangle()
                                     .fill(.yellow)
                                     .frame(width: 1)
-                                    .offset(x: CGFloat(playerState.playbackTime * pixelsPerSecond), y: 0)
+                                    .offset(x: CGFloat(playerState.playbackTime * zoomLevel), y: 0)
                             }
                             .gesture(MagnificationGesture()
                                 .onChanged { scale in
                                     if (!isZooming) {
                                         isZooming = true
-                                        startingPixelsPerSecond = pixelsPerSecond
+                                        startingZoomLevel = zoomLevel
                                     }
-                                    pixelsPerSecond = BoundsChecker.minmax(minBound: Float(minPixelsPerSecond), value: startingPixelsPerSecond * Float(scale.magnitude), maxBound: maxPixelsPerSecond)
+                                    zoomLevel = BoundsChecker.minmax(minBound: Float(minZoomLevel), value: startingZoomLevel * Float(scale.magnitude), maxBound: maxZoomLevel)
                                 }
                                 .onEnded { _ in isZooming = false }
                             )
@@ -88,9 +85,9 @@ struct VideoTimeline : View {
                 .frame(height: 66)
                 TimelineScrollbar(
                     scrollPosition: $scrollPosition.x,
-                    pixelsPerSecond: $pixelsPerSecond,
-                    maxPixelsPerSecond: CGFloat(maxPixelsPerSecond),
-                    minPixelsPerSecond: minPixelsPerSecond
+                    zoomLevel: $zoomLevel,
+                    maxZoomLevel: CGFloat(maxZoomLevel),
+                    minZoomLevel: minZoomLevel
                 )
             }
         }

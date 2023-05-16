@@ -13,19 +13,19 @@ import CursorKit
 struct TimelineScrollbar : View {
     
     @Binding var scrollPosition: CGFloat
-    @Binding var pixelsPerSecond: Float
+    @Binding var zoomLevel: Float
     
-    var maxPixelsPerSecond: CGFloat
-    var minPixelsPerSecond: CGFloat
+    var maxZoomLevel: CGFloat
+    var minZoomLevel: CGFloat
     var scrollRatio: CGFloat {
-        self.minPixelsPerSecond / CGFloat(self.pixelsPerSecond)
+        self.minZoomLevel / CGFloat(self.zoomLevel)
     }
     
     var body : some View {
         GeometryReader { geometry in
             
             var minOverlayWidth: CGFloat {
-                geometry.size.width * minPixelsPerSecond / maxPixelsPerSecond
+                geometry.size.width * minZoomLevel / maxZoomLevel
             }
             
             let overlayStart: Binding<CGFloat> = Binding(
@@ -36,7 +36,7 @@ struct TimelineScrollbar : View {
             let overlayWidth: Binding<CGFloat> = Binding(
                 get: { self.scrollRatio * geometry.size.width },
                 set: { val in
-                    pixelsPerSecond = Float(geometry.size.width * minPixelsPerSecond / val)
+                    zoomLevel = Float(geometry.size.width * minZoomLevel / val)
                 }
             )
         
@@ -157,7 +157,7 @@ struct TimelineScrollbarOverlay : View {
 struct TimelineScrollbar_Preview : PreviewProvider {
     
     static var previews: some View {
-        TimelineScrollbar(scrollPosition: .constant(200), pixelsPerSecond: .constant(1), maxPixelsPerSecond: 12, minPixelsPerSecond: 1)
+        TimelineScrollbar(scrollPosition: .constant(200), zoomLevel: .constant(1), maxZoomLevel: 12, minZoomLevel: 1)
             .frame(width: 800)
     }
 }

@@ -11,15 +11,15 @@ import OrderedCollections
 
 struct EventBar : View {
     var videoDuration: Float
-    var pixelsPerSecond: Float
+    var zoomLevel: Float
     var scrollOffset: CGFloat
     var timelineWrapperWidth: CGFloat
     
     var events: OrderedDictionary<UUID, ProjectEvent>
     
     func getEventsInView() -> [ProjectEvent] {
-        let viewStartTime: Float = Float(scrollOffset) / pixelsPerSecond;
-        let viewEndTime: Float = viewStartTime + Float(timelineWrapperWidth) / pixelsPerSecond;
+        let viewStartTime: Float = Float(scrollOffset) / zoomLevel;
+        let viewEndTime: Float = viewStartTime + Float(timelineWrapperWidth) / zoomLevel;
         
         var eventsInView: [ProjectEvent] = []
         
@@ -40,8 +40,8 @@ struct EventBar : View {
                 ForEach(getEventsInView(), id: \.id) { event in
                     Rectangle()
                         .fill(Color(event.code.color.nsColor))
-                        .offset(x: CGFloat(event.startTime * pixelsPerSecond))
-                        .frame(width: CGFloat(event.duration * pixelsPerSecond), height: geometry.size.height)
+                        .offset(x: CGFloat(event.startTime * zoomLevel))
+                        .frame(width: CGFloat(event.duration * zoomLevel), height: geometry.size.height)
                 }
             }
             

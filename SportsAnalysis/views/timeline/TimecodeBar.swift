@@ -25,15 +25,15 @@ struct Tick : Hashable {
 
 struct TimecodeBar : View {
     var videoDuration: Float
-    var pixelsPerSecond: Float
+    var zoomLevel: Float
     var scrollOffset: CGFloat
     var timelineWrapperWidth: CGFloat
     
     var timelineOffset : Float {
         let scrollOffsetWithLowerLimit = max(0, Float(scrollOffset))
         
-        let timelineOffset = scrollOffsetWithLowerLimit / pixelsPerSecond
-        let timelineWrapperWidthSeconds = Float(timelineWrapperWidth) / pixelsPerSecond
+        let timelineOffset = scrollOffsetWithLowerLimit / zoomLevel
+        let timelineWrapperWidthSeconds = Float(timelineWrapperWidth) / zoomLevel
         
         // TODO calculate upper bound to prevent the ticks from overflowing
         return min(videoDuration - timelineWrapperWidthSeconds, timelineOffset)
@@ -60,7 +60,7 @@ struct TimecodeBar : View {
         
         for setting in tickSettings {
             tickSetting = setting
-            let tickWidth = pixelsPerSecond * Float(setting.minorTickSeconds)
+            let tickWidth = zoomLevel * Float(setting.minorTickSeconds)
             if (tickWidth > 12) {
                 break
             }
@@ -73,10 +73,10 @@ struct TimecodeBar : View {
     func getTicks() -> [Tick] {
         let tickSetting = bestTickSetting()
         
-        let tickWidth = pixelsPerSecond * Float(tickSetting.minorTickSeconds)
+        let tickWidth = zoomLevel * Float(tickSetting.minorTickSeconds)
         
         let nextTickTime = ceil(timelineOffset / tickSetting.minorTickSeconds) * tickSetting.minorTickSeconds
-        let nextTickOffset = nextTickTime * pixelsPerSecond
+        let nextTickOffset = nextTickTime * zoomLevel
         
         var ticks: [Tick] = [
             Tick(
