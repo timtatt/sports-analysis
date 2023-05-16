@@ -8,22 +8,38 @@
 import Foundation
 import SwiftUI
 import AppKit
+import CursorKit
 
 struct TimelineScrollbar : View {
     
-    @Binding var overlayStart: CGFloat;
+    @Binding var scrollPosition: CGFloat
+    @Binding var pixelsPerSecond: Float
     
-    @State var scrollbarWidth: CGFloat = 0;
-    @State var overlayEnd: CGFloat = 400;
-    @State var viewableWidth: CGFloat = 200;
-    
-    @State var overlayCursorOffset: CGFloat = 0;
-    
-    @State var isDragging: Bool = false
-    @State var mouseDraggingOffset: CGFloat = 0
+    var maxPixelsPerSecond: CGFloat
+    var minPixelsPerSecond: CGFloat
+    var scrollRatio: CGFloat {
+        self.minPixelsPerSecond / CGFloat(self.pixelsPerSecond)
+    }
     
     var body : some View {
         GeometryReader { geometry in
+            
+            var minOverlayWidth: CGFloat {
+                geometry.size.width * minPixelsPerSecond / maxPixelsPerSecond
+            }
+            
+            let overlayStart: Binding<CGFloat> = Binding(
+                get: { self.scrollRatio * self.scrollPosition },
+                set: { val in scrollPosition = val / self.scrollRatio }
+            )
+            
+            let overlayWidth: Binding<CGFloat> = Binding(
+                get: { self.scrollRatio * geometry.size.width },
+                set: { val in
+                    pixelsPerSecond = Float(geometry.size.width * minPixelsPerSecond / val)
+                }
+            )
+        
             ZStack(alignment: .leading) {
                 Rectangle()
                     .fill(.purple)
@@ -38,15 +54,10 @@ struct TimelineScrollbar : View {
                     .offset(x: 22)
                     .frame(width: 6, height: 6)
                 
-                TimelineScrollbarOverlay(overlayEnd: $overlayEnd, overlayStart: $overlayStart)
+                TimelineScrollbarOverlay(minOverlayWidth: minOverlayWidth, overlayWidth: overlayWidth, overlayStart: overlayStart )
                     .frame(width: geometry.size.width, height: geometry.size.height)
-                    .coordinateSpace(name: "timelineScrollbarOverlay")
-            }
-            .onAppear {
-                scrollbarWidth = geometry.size.width
             }
         }
-        .coordinateSpace(name: "timelineScrollbar")
         .frame(height: 20)
     }
 }
@@ -55,30 +66,28 @@ struct TimelineScrollbar : View {
 struct TimelineScrollbarOverlay : View {
     
     let handleWidth: CGFloat = 4
+    var minOverlayWidth: CGFloat
     
-    @Binding var overlayEnd: CGFloat
+    @Binding var overlayWidth: CGFloat
     @Binding var overlayStart: CGFloat
     
     @State var startHandleHovering: Bool = false
     @State var endHandleHovering: Bool = false
+    @State var overlayHovering: Bool = false
     
     @State var startingPoint: CGFloat = 0
+    @State var startingWidth: CGFloat = 0
     @State var isDragging: Bool = false
     
     var body : some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .fill(Color(.white).opacity(0.4))
-                    .frame(width: overlayEnd - overlayStart - handleWidth * 2, height: geometry.size.height)
+                    .fill(Color(.white).opacity(overlayHovering ? 0.6 : 0.4))
+                    .frame(width: max(0, overlayWidth - handleWidth * 2), height: geometry.size.height)
                     .offset(x: overlayStart + handleWidth)
-                    .onHover { isHovering in
-                        if isHovering {
-                            NSCursor.openHand.push()
-                        } else {
-                            NSCursor.pop()
-                        }
-                    }
+                    .cursor(.openHand)
+                    .onHover { isHovering in overlayHovering = isHovering}
                     .gesture(DragGesture()
                         .onChanged { gesture in
                             if (!isDragging) {
@@ -86,9 +95,7 @@ struct TimelineScrollbarOverlay : View {
                                 startingPoint = overlayStart
                                 NSCursor.closedHand.push()
                             }
-                            let overlayWidth = overlayEnd - overlayStart
                             overlayStart = BoundsChecker.minmax(minBound: 0, value: startingPoint + gesture.translation.width, maxBound: geometry.size.width - overlayWidth)
-                            overlayEnd = overlayStart + overlayWidth
                             
                         }
                         .onEnded { _ in
@@ -107,18 +114,16 @@ struct TimelineScrollbarOverlay : View {
                             if (!isDragging) {
                                 isDragging = true
                                 startingPoint = overlayStart
+                                startingWidth = overlayWidth
                             }
-                            overlayStart = BoundsChecker.minmax(minBound: 0, value: startingPoint + gesture.translation.width, maxBound: overlayEnd - 1)
+                            overlayStart = BoundsChecker.minmax(minBound: 0, value: startingPoint + gesture.translation.width, maxBound: overlayStart + overlayWidth - minOverlayWidth)
+                            overlayWidth = BoundsChecker.minmax(minBound: minOverlayWidth, value: startingWidth - gesture.translation.width, maxBound: geometry.size.width - startingWidth - startingPoint)
                         }
                         .onEnded { _ in isDragging = false}
                     )
+                    .cursor(.resizeLeftRight)
                     .onHover { isHovering in
                         startHandleHovering = isHovering
-                        if (isHovering) {
-                            NSCursor.resizeLeft.push()
-                        } else {
-                            NSCursor.pop()
-                        }
                     }
                 
                 
@@ -127,27 +132,20 @@ struct TimelineScrollbarOverlay : View {
                     .fill(Color(.white).opacity(endHandleHovering ? 1 : 0.8))
                     .cornerRadius(2, corners: [.topRight, .bottomRight])
                     .frame(width: handleWidth)
-                    .offset(x: overlayEnd - handleWidth)
-                    .onAppear {
-                        print(endHandleHovering)
-                    }
+                    .offset(x: overlayStart + overlayWidth - handleWidth)
                     .gesture(DragGesture()
                         .onChanged { gesture in
                             if (!isDragging) {
                                 isDragging = true
-                                startingPoint = overlayEnd
+                                startingWidth = overlayWidth
                             }
-                            overlayEnd = BoundsChecker.minmax(minBound: overlayStart + 1, value: startingPoint + gesture.translation.width, maxBound: geometry.size.width)
+                            overlayWidth = BoundsChecker.minmax(minBound: minOverlayWidth, value: startingWidth + gesture.translation.width, maxBound: geometry.size.width - overlayStart)
                         }
                         .onEnded { _ in isDragging = false}
                     )
+                    .cursor(.resizeLeftRight)
                     .onHover { isHovering in
                         endHandleHovering = isHovering
-                        if isHovering {
-                            NSCursor.resizeRight.set()
-                        } else {
-                            NSCursor.pop()
-                        }
                     }
             }
             
@@ -159,7 +157,7 @@ struct TimelineScrollbarOverlay : View {
 struct TimelineScrollbar_Preview : PreviewProvider {
     
     static var previews: some View {
-        TimelineScrollbar(overlayStart: .constant(200))
+        TimelineScrollbar(scrollPosition: .constant(200), pixelsPerSecond: .constant(1), maxPixelsPerSecond: 12, minPixelsPerSecond: 1)
             .frame(width: 800)
     }
 }

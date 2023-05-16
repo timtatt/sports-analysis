@@ -22,9 +22,11 @@ struct TrackableScrollView<Content : View> : NSViewRepresentable {
     
     func makeNSView(context: Context) -> NSScrollView {
         let view = NSScrollView()
+        // TODO add ability to chose axis
         
-        view.hasVerticalScroller = true
+        view.hasVerticalScroller = false
         view.hasHorizontalScroller = true
+        view.horizontalScrollElasticity = .none
         
         NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.viewScrolled(_:)), name: NSView.boundsDidChangeNotification, object: view.contentView)
         

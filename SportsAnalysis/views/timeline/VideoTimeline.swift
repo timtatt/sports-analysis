@@ -24,17 +24,23 @@ struct VideoTimeline : View {
         CGFloat(playerState.duration * pixelsPerSecond)
     }
     
-    func pixelsPerSecondScale(width: CGFloat) -> ClosedRange<Float> {
-        let minPixelsPerSecond = Float(width) / playerState.duration
-        
-        return (minPixelsPerSecond > 24 ? 1 : minPixelsPerSecond)...24
-    }
+    let maxPixelsPerSecond: Float = 24
    
     
     var body : some View {
         GeometryReader { geometry in
+            var minPixelsPerSecond : CGFloat {
+                geometry.size.width / CGFloat(playerState.duration)
+            }
+            
             VStack {
-                Slider(value: $pixelsPerSecond, in: pixelsPerSecondScale(width: geometry.size.width))
+                var pixelsPerSecondScale: ClosedRange<Float> {
+                    let minPixelsPerSecond = Float(minPixelsPerSecond)
+                    
+                    return (minPixelsPerSecond > 24 ? 1 : minPixelsPerSecond)...maxPixelsPerSecond
+                }
+                
+                Slider(value: $pixelsPerSecond, in: pixelsPerSecondScale)
                 ZStack {
                     GeometryReader { outerScrollGeometry in
                         TrackableScrollView(scrollPosition: $scrollPosition) {
@@ -58,7 +64,7 @@ struct VideoTimeline : View {
                     }
                 }
                 .frame(height: 66)
-                TimelineScrollbar(overlayStart: $scrollPosition.x)
+                TimelineScrollbar(scrollPosition: $scrollPosition.x, pixelsPerSecond: $pixelsPerSecond, maxPixelsPerSecond: CGFloat(maxPixelsPerSecond), minPixelsPerSecond: minPixelsPerSecond)
             }
         }
     }
