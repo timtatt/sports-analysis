@@ -38,7 +38,6 @@ class PlayerState : ObservableObject {
             }
         }
         
-        
         cancellables.insert($playerItem.sink { playerItem in
             self.player.replaceCurrentItem(with: playerItem)
         })

@@ -35,7 +35,6 @@ struct TimecodeBar : View {
         let timelineOffset = scrollOffsetWithLowerLimit / zoomLevel
         let timelineWrapperWidthSeconds = Float(timelineWrapperWidth) / zoomLevel
         
-        // TODO calculate upper bound to prevent the ticks from overflowing
         return min(videoDuration - timelineWrapperWidthSeconds, timelineOffset)
     }
     
@@ -43,6 +42,7 @@ struct TimecodeBar : View {
         TickSetting(minorTickSeconds: 1, majorTickSeconds: 5),
         TickSetting(minorTickSeconds: 2, majorTickSeconds: 10),
         TickSetting(minorTickSeconds: 10, majorTickSeconds: 30),
+        TickSetting(minorTickSeconds: 10, majorTickSeconds: 60),
         TickSetting(minorTickSeconds: 5, majorTickSeconds: 60),
         TickSetting(minorTickSeconds: 10, majorTickSeconds: 60),
         TickSetting(minorTickSeconds: 15, majorTickSeconds: 60),
@@ -85,13 +85,15 @@ struct TimecodeBar : View {
                 majorTick: false)
         ]
         
+        let timelineWrapperWidthSeconds = Float(timelineWrapperWidth) / zoomLevel
+        
         repeat {
             let tickTime = ticks.last!.time + tickSetting.minorTickSeconds
             ticks.append(Tick(
                 time: tickTime,
                 offset: ticks.last!.offset + CGFloat(tickWidth),
                 majorTick: tickTime.remainder(dividingBy: tickSetting.majorTickSeconds) == 0))
-        } while (ticks.last!.offset < timelineWrapperWidth + scrollOffset)
+        } while (ticks.last!.time < timelineWrapperWidthSeconds + timelineOffset)
         
         return ticks
     }

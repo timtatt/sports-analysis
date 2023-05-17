@@ -27,6 +27,8 @@ struct TrackableScrollView<Content : View> : NSViewRepresentable {
         view.hasVerticalScroller = false
         view.hasHorizontalScroller = true
         view.horizontalScrollElasticity = .none
+        view.horizontalScroller?.alphaValue = 0
+        view.horizontalScroller?.scrollerStyle = .overlay
         
         NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.viewScrolled(_:)), name: NSView.boundsDidChangeNotification, object: view.contentView)
         

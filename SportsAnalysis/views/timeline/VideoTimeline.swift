@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import OrderedCollections
+import AVKit
 
 struct VideoTimeline : View {
     
@@ -26,6 +27,9 @@ struct VideoTimeline : View {
     let maxZoomLevel: Float = 18
     @State var isZooming: Bool = false
     @State var startingZoomLevel: Float = 0
+    
+    @State var isScrubbing: Bool = false
+    @State var startingScrubberPosition: Float = 0
    
     
     var body : some View {
@@ -52,6 +56,15 @@ struct VideoTimeline : View {
                                         zoomLevel: zoomLevel,
                                         scrollOffset: scrollPosition.x,
                                         timelineWrapperWidth: outerScrollGeometry.size.width)
+                                    .onTapGesture {
+                                        let frame = geometry.frame(in: .global)
+                                        let mouseScreenLocation = NSApp.keyWindow?.mouseLocationOutsideOfEventStream ?? .zero
+                                        let mouseLocation = CGPoint(x: mouseScreenLocation.x - frame.origin.x, y: mouseScreenLocation.y - frame.origin.y)
+                                        
+                                        let offsetPosition = scrollPosition.x + mouseLocation.x
+                                        let playbackPosition = offsetPosition / CGFloat(zoomLevel)
+                                        playerState.seek(seconds: Float(playbackPosition))
+                                    }
                                     
                                     EventBar(
                                         videoDuration: playerState.duration,
@@ -62,23 +75,39 @@ struct VideoTimeline : View {
                                 }
                                 
                                 // Scrubber
-                                Rectangle()
-                                    .fill(.yellow)
-                                    .frame(width: 1)
-                                    .offset(x: CGFloat(playerState.playbackTime * zoomLevel), y: 0)
+                                TimelineScrubber(height: 40)
+                                    .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
+                                    .cursor(.openHand)
+                                    .gesture(DragGesture()
+                                        .onChanged { gesture in
+                                            if (!isScrubbing) {
+                                                isScrubbing = true
+                                                NSCursor.closedHand.push()
+                                                startingScrubberPosition = playerState.playbackTime
+                                            }
+                                            playerState.playbackTime = BoundsChecker.minmax(minBound: 0, value: startingScrubberPosition + Float(gesture.translation.width) / zoomLevel, maxBound: playerState.duration)
+                                        }
+                                        .onEnded { _ in
+                                            isScrubbing = false
+                                            NSCursor.pop()
+                                        })
                             }
-                            .gesture(MagnificationGesture()
-                                .onChanged { scale in
-                                    if (!isZooming) {
-                                        isZooming = true
-                                        startingZoomLevel = zoomLevel
-                                    }
-                                    zoomLevel = BoundsChecker.minmax(minBound: Float(minZoomLevel), value: startingZoomLevel * Float(scale.magnitude), maxBound: maxZoomLevel)
-                                }
-                                .onEnded { _ in isZooming = false }
-                            )
                             .frame(width: timelineWidth, height: outerScrollGeometry.size.height)
                         }
+                        .gesture(MagnificationGesture()
+                            .onChanged { scale in
+                                if (!isZooming) {
+                                    print("started zooming")
+                                    isZooming = true
+                                    startingZoomLevel = zoomLevel
+                                }
+                                zoomLevel = BoundsChecker.minmax(minBound: Float(minZoomLevel), value: startingZoomLevel * Float(scale.magnitude), maxBound: maxZoomLevel)
+                            }
+                            .onEnded { _ in
+                                isZooming = false
+                                print("finished zooming")
+                            }
+                        )
                         .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
                     }
                 }
@@ -94,16 +123,28 @@ struct VideoTimeline : View {
     }
 }
 
+class MockAVPlayerItem : AVPlayerItem {
+    public override var duration: CMTime {
+        CMTime(value: 3000, timescale: 1)
+    }
+}
+
 struct VideoTimeline_Previews : PreviewProvider {
+    
+    
     static var previews: some View {
-        let state = PlayerState()
-        HStack {
+        let state: PlayerState = {
+            let state = PlayerState()
+            let composition = AVMutableComposition()
+            state.playerItem = MockAVPlayerItem(asset: composition)
+            state.playbackTime = 11.2
+            return state
+        }()
+        
+        VStack {
             VideoTimeline(events: OrderedDictionary(), playerState: state)
         }
-        .onAppear {
-            state.playbackTime = 11.2
-        }
-        .frame(width: 900, height: 80)
+        .frame(width: 900, height: 160)
         
     }
 }
