@@ -12,15 +12,16 @@ struct ProjectManagerView : View {
     @ObservedObject var project: Project
     
     var body : some View {
-        TabView {
-            ProjectCodesView(project: project, playbackTime: $playerState.playbackTime)
-                .tabItem {
-                    Label("Codes", systemImage: "tray.and.arrow.up.fill")
-                }
-            ProjectSettingsView(project: project)
-                .tabItem {
-                    Label("Project Settings", systemImage: "tray.and.arrow.up.fill")
-                }
+        VSplitView {
+            Widget(icon: "tag.fill", title: "Codes") {
+                ProjectCodesView(project: project, playbackTime: $playerState.playbackTime)
+            }
+            Widget(icon: "gear", title: "Project Settings") {
+                ProjectSettingsView(project: project)
+                    .tabItem {
+                        Label("Project Settings", systemImage: "tray.and.arrow.up.fill")
+                    }
+            }
         }
     }
 }

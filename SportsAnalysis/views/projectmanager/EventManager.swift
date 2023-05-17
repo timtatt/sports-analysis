@@ -28,8 +28,7 @@ struct EventManager : View {
             }
         )
         
-        VStack {
-            Text("Event Manager")
+        Widget(icon: "mappin.and.ellipse", title: "Events") {
             List(project.events.values, selection: selectedEvent) { event in
                 EventListItem(event: event, selectedEvents: $selectedEvents)
             }

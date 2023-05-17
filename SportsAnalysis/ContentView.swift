@@ -43,13 +43,14 @@ struct ContentView: View {
                     }
                 }
             }
-            HStack {
+            HSplitView {
                 
                 ProjectManagerView(playerState: playerState, project: projectStore.project)
+                    .frame(minWidth: 300)
                 
                 VStack {
                     PreviewWindowView(playerState: playerState)
-                        .frame(height: 576.0)
+                        .frame(minWidth: 600, idealWidth: 720, maxWidth: .infinity)
                         .task {
                             do {
                                 projectStore.loadLastProject()
@@ -62,14 +63,16 @@ struct ContentView: View {
                         }
                     
                     VideoTimeline(events: projectStore.project.events, playerState: playerState)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, maxHeight: 100)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
                 }
-                .frame(width: 720)
+                .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .scaledToFit()
                 
                 EventManager(project: projectStore.project, playerState: playerState)
-                    .tabItem {
-                        Label("Events", systemImage: "tray.and.arrow.up.fill")
-                    }
+                    .frame(minWidth: 300)
             }
         }
     }
@@ -78,5 +81,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .frame(height: 800)
     }
 }

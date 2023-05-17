@@ -27,8 +27,6 @@ struct VideoTimeline : View {
     let maxZoomLevel: Float = 18
     @State var isZooming: Bool = false
     @State var startingZoomLevel: Float = 0
-    
-    @State var isScrubbing: Bool = false
     @State var startingScrubberPosition: Float = 0
    
     
@@ -80,15 +78,15 @@ struct VideoTimeline : View {
                                     .cursor(.openHand)
                                     .gesture(DragGesture()
                                         .onChanged { gesture in
-                                            if (!isScrubbing) {
-                                                isScrubbing = true
+                                            if (!playerState.isScrubbing) {
                                                 NSCursor.closedHand.push()
+                                                playerState.startScrubbing()
                                                 startingScrubberPosition = playerState.playbackTime
                                             }
                                             playerState.playbackTime = BoundsChecker.minmax(minBound: 0, value: startingScrubberPosition + Float(gesture.translation.width) / zoomLevel, maxBound: playerState.duration)
                                         }
                                         .onEnded { _ in
-                                            isScrubbing = false
+                                            playerState.stopScrubbing()
                                             NSCursor.pop()
                                         })
                             }
