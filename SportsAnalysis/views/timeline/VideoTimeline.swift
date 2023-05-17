@@ -49,7 +49,7 @@ struct VideoTimeline : View {
                     GeometryReader { outerScrollGeometry in
                         TrackableScrollView(scrollPosition: $scrollPosition) {
                             ZStack(alignment: .bottomLeading) {
-                                Color.red.ignoresSafeArea()
+                                Color("WidgetBackground").ignoresSafeArea()
                                 VStack(spacing: 0) {
                                     TimecodeBar(
                                         videoDuration: playerState.duration,
@@ -111,10 +111,12 @@ struct VideoTimeline : View {
                         .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
                     }
                 }
+                .cornerRadius(8)
                 .frame(height: 66)
                 TimelineScrollbar(
                     scrollPosition: $scrollPosition.x,
                     zoomLevel: $zoomLevel,
+                    events: events.values.elements,
                     maxZoomLevel: CGFloat(maxZoomLevel),
                     minZoomLevel: minZoomLevel
                 )

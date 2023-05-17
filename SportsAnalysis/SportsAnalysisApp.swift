@@ -12,6 +12,8 @@ struct SportsAnalysisApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .padding(20)
+                .background(Color("Background"))
         }
     }
 }

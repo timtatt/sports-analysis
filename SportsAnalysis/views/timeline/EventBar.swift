@@ -35,13 +35,11 @@ struct EventBar : View {
     var body : some View {
         ZStack {
             GeometryReader { geometry in
-                Rectangle()
-                    .fill(.red)
                 ForEach(getEventsInView(), id: \.id) { event in
-                    Rectangle()
+                    RoundedRectangle(cornerRadius: 6)
                         .fill(Color(event.code.color.nsColor))
-                        .offset(x: CGFloat(event.startTime * zoomLevel))
-                        .frame(width: CGFloat(event.duration * zoomLevel), height: geometry.size.height)
+                        .offset(x: CGFloat(event.startTime * zoomLevel), y: 2)
+                        .frame(width: CGFloat(event.duration * zoomLevel), height: geometry.size.height - 4)
                 }
             }
             

@@ -15,10 +15,10 @@ struct TimelineScrubber : View {
     var body : some View {
         VStack(alignment: .center, spacing: -2) {
             TimelineScrubberHandle()
-                .fill(.blue)
+                .fill(Color("Primary"))
                 .frame(width: 12, height: 22)
             Rectangle()
-                .fill(.blue)
+                .fill(Color("Primary"))
                 .frame(width: 1, height: height + 2)
         }
     }

@@ -42,7 +42,6 @@ struct ContentView: View {
                         fatalError(error.localizedDescription)
                     }
                 }
-                Text("modes for coding|analysis")
             }
             HStack {
                 

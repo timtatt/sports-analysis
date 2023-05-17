@@ -15,6 +15,8 @@ struct TimelineScrollbar : View {
     @Binding var scrollPosition: CGFloat
     @Binding var zoomLevel: Float
     
+    var events: [ProjectEvent]
+    
     var maxZoomLevel: CGFloat
     var minZoomLevel: CGFloat
     var scrollRatio: CGFloat {
@@ -39,23 +41,19 @@ struct TimelineScrollbar : View {
             )
         
             ZStack(alignment: .leading) {
-                Rectangle()
-                    .fill(.purple)
-                
-                Circle()
-                    .fill(.red)
-                    .offset(x: 20)
-                    .frame(width: 6, height: 6)
-                
-                Circle()
-                    .fill(.blue)
-                    .offset(x: 22)
-                    .frame(width: 6, height: 6)
+                ForEach(events, id: \.id) { event in
+                    Circle()
+                        .fill(Color(event.code.color.nsColor))
+                        .offset(x: CGFloat(event.startTime) * minZoomLevel)
+                        .frame(width: 6, height: 6)
+                }
                 
                 TimelineScrollbarOverlay(minOverlayWidth: minOverlayWidth, overlayWidth: overlayWidth, overlayStart: overlayStart )
                     .frame(width: geometry.size.width, height: geometry.size.height)
             }
+            .background(Color("WidgetBackground"))
         }
+        .cornerRadius(6)
         .frame(height: 20)
     }
 }
@@ -146,7 +144,6 @@ struct TimelineScrollbarOverlay : View {
                         endHandleHovering = isHovering
                     }
             }
-            
         }
     }
 }
@@ -155,7 +152,7 @@ struct TimelineScrollbarOverlay : View {
 struct TimelineScrollbar_Preview : PreviewProvider {
     
     static var previews: some View {
-        TimelineScrollbar(scrollPosition: .constant(200), zoomLevel: .constant(1), maxZoomLevel: 12, minZoomLevel: 1)
+        TimelineScrollbar(scrollPosition: .constant(200), zoomLevel: .constant(1), events: [], maxZoomLevel: 12, minZoomLevel: 1)
             .frame(width: 800)
     }
 }

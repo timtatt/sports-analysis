@@ -41,9 +41,7 @@ struct TimecodeBar : View {
     let tickSettings = [
         TickSetting(minorTickSeconds: 1, majorTickSeconds: 5),
         TickSetting(minorTickSeconds: 2, majorTickSeconds: 10),
-        TickSetting(minorTickSeconds: 10, majorTickSeconds: 30),
-        TickSetting(minorTickSeconds: 10, majorTickSeconds: 60),
-        TickSetting(minorTickSeconds: 5, majorTickSeconds: 60),
+        TickSetting(minorTickSeconds: 5, majorTickSeconds: 30),
         TickSetting(minorTickSeconds: 10, majorTickSeconds: 60),
         TickSetting(minorTickSeconds: 15, majorTickSeconds: 60),
         TickSetting(minorTickSeconds: 30, majorTickSeconds: 300),
@@ -101,12 +99,11 @@ struct TimecodeBar : View {
     var body : some View {
         ZStack(alignment: .bottom) {
             Rectangle()
-                .fill(.green)
+                .fill(Color("TimecodeBarBackground"))
                     
             // todo use canvas for timecode bar performance
             GeometryReader { geometry in
                 ZStack(alignment: .bottomLeading) {
-                    Color.cyan.ignoresSafeArea()
                     ForEach(getTicks(), id: \.self) { tick in
                         Rectangle()
                             .background(.gray)
