@@ -64,7 +64,7 @@ struct VideoTimeline : View {
                                         let playbackPosition = offsetPosition / CGFloat(zoomLevel)
                                         playerState.seek(seconds: Float(playbackPosition))
                                     }
-                                    .gesture(DragGesture(minimumDistance: 1, coordinateSpace: .local)
+                                    .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .local)
                                         .onChanged { gesture in
                                             let mouseLocation = getMouseLocation(geometry)
                                             let offsetPosition = scrollPosition.x + mouseLocation.x
@@ -117,21 +117,22 @@ struct VideoTimeline : View {
                             }
                             .frame(width: timelineWidth, height: outerScrollGeometry.size.height)
                         }
-                        .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .gesture(MagnificationGesture()
                             .onChanged { scale in
-                                print("magnifying")
                                 if (!isZooming) {
-                                    print("started zooming")
                                     isZooming = true
                                     startingZoomLevel = zoomLevel
                                 }
-                                zoomLevel = BoundsChecker.minmax(minBound: Float(minZoomLevel), value: startingZoomLevel * Float(scale.magnitude), maxBound: maxZoomLevel)
+                                let newZoomLevel = BoundsChecker.minmax(minBound: Float(minZoomLevel), value: startingZoomLevel * Float(scale.magnitude), maxBound: maxZoomLevel)
+                                
+                                let mouseLocation = getMouseLocation(geometry)
+                                let newScrollPosition = (CGFloat(newZoomLevel) * (scrollPosition.x + mouseLocation.x) / CGFloat(zoomLevel)) - mouseLocation.x
+                                
+                                scrollPosition.x = BoundsChecker.minmax(minBound: 0, value: newScrollPosition, maxBound: CGFloat(playerState.duration * newZoomLevel) - geometry.size.width)
+                                zoomLevel = newZoomLevel
                             }
-                            .onEnded { _ in
-                                isZooming = false
-                                print("finished zooming")
-                            }
+                            .onEnded { _ in isZooming = false }
                         )
                     }
                 }
