@@ -70,6 +70,7 @@ class PlayerState : ObservableObject {
     func startScrubbing() {
         wasPlaying = isPlaying
         isPlaying = false
+        isScrubbing = true
     }
     
     func stopScrubbing() {

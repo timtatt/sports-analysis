@@ -85,7 +85,7 @@ struct VideoTimeline : View {
                                                 playerState.startScrubbing()
                                                 startingScrubberPosition = playerState.playbackTime
                                             }
-                                            playerState.playbackTime = BoundsChecker.minmax(minBound: 0, value: startingScrubberPosition + Float(gesture.translation.width) / zoomLevel, maxBound: playerState.duration)
+                                            playerState.playbackTime = BoundsChecker.minmax(minBound: 0, value: startingScrubberPosition + (Float(gesture.translation.width) / zoomLevel), maxBound: playerState.duration)
                                         }
                                         .onEnded { _ in
                                             playerState.stopScrubbing()
