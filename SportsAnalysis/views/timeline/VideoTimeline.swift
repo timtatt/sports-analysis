@@ -29,6 +29,11 @@ struct VideoTimeline : View {
     @State var startingZoomLevel: Float = 0
     @State var startingScrubberPosition: Float = 0
    
+    func getMouseLocation(_ geometry: GeometryProxy) -> CGPoint {
+        let frame = geometry.frame(in: .global)
+        let mouseScreenLocation = NSApp.keyWindow?.mouseLocationOutsideOfEventStream ?? .zero
+        return CGPoint(x: mouseScreenLocation.x - frame.origin.x, y: mouseScreenLocation.y - frame.origin.y)
+    }
     
     var body : some View {
         GeometryReader { geometry in
@@ -55,14 +60,33 @@ struct VideoTimeline : View {
                                         scrollOffset: scrollPosition.x,
                                         timelineWrapperWidth: outerScrollGeometry.size.width)
                                     .onTapGesture {
-                                        let frame = geometry.frame(in: .global)
-                                        let mouseScreenLocation = NSApp.keyWindow?.mouseLocationOutsideOfEventStream ?? .zero
-                                        let mouseLocation = CGPoint(x: mouseScreenLocation.x - frame.origin.x, y: mouseScreenLocation.y - frame.origin.y)
-                                        
-                                        let offsetPosition = scrollPosition.x + mouseLocation.x
+                                        let offsetPosition = scrollPosition.x + getMouseLocation(geometry).x
                                         let playbackPosition = offsetPosition / CGFloat(zoomLevel)
                                         playerState.seek(seconds: Float(playbackPosition))
                                     }
+                                    .gesture(DragGesture(minimumDistance: 1, coordinateSpace: .local)
+                                        .onChanged { gesture in
+                                            let mouseLocation = getMouseLocation(geometry)
+                                            let offsetPosition = scrollPosition.x + mouseLocation.x
+                                            let playbackPosition = BoundsChecker.minmax(minBound: 0, value: Float(offsetPosition) / zoomLevel, maxBound: playerState.duration)
+                                                                                        
+                                            if (mouseLocation.x > geometry.size.width) {
+                                                scrollPosition.x = BoundsChecker.minmax(minBound: 0, value: scrollPosition.x + mouseLocation.x - geometry.size.width, maxBound: timelineWidth - geometry.size.width)
+                                            } else if (mouseLocation.x < 0) {
+                                                scrollPosition.x = BoundsChecker.minmax(minBound: 0, value: scrollPosition.x + mouseLocation.x, maxBound: timelineWidth - geometry.size.width)
+                                            }
+                                            
+                                            if (!playerState.isScrubbing) {
+                                                NSCursor.closedHand.push()
+                                                playerState.startScrubbing()
+                                            }
+                                            
+                                            playerState.playbackTime = BoundsChecker.minmax(minBound: 0, value: playbackPosition, maxBound: playerState.duration)
+                                        }
+                                        .onEnded { _ in
+                                            playerState.stopScrubbing()
+                                            NSCursor.pop()
+                                        })
                                     
                                     // TODO not updating when events are added
                                     EventBar(
@@ -77,7 +101,6 @@ struct VideoTimeline : View {
                                 TimelineScrubber(height: 40)
                                     .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
                                     .cursor(.openHand)
-                                    // TODO fix scrubber, ratio is wrong when scrubbing
                                     .gesture(DragGesture()
                                         .onChanged { gesture in
                                             if (!playerState.isScrubbing) {
@@ -94,8 +117,10 @@ struct VideoTimeline : View {
                             }
                             .frame(width: timelineWidth, height: outerScrollGeometry.size.height)
                         }
+                        .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
                         .gesture(MagnificationGesture()
                             .onChanged { scale in
+                                print("magnifying")
                                 if (!isZooming) {
                                     print("started zooming")
                                     isZooming = true
@@ -108,7 +133,6 @@ struct VideoTimeline : View {
                                 print("finished zooming")
                             }
                         )
-                        .frame(width: outerScrollGeometry.size.width, height: outerScrollGeometry.size.height)
                     }
                 }
                 .cornerRadius(8)
