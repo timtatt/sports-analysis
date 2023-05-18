@@ -64,6 +64,7 @@ struct VideoTimeline : View {
                                         playerState.seek(seconds: Float(playbackPosition))
                                     }
                                     
+                                    // TODO not updating when events are added
                                     EventBar(
                                         videoDuration: playerState.duration,
                                         zoomLevel: zoomLevel,
@@ -76,6 +77,7 @@ struct VideoTimeline : View {
                                 TimelineScrubber(height: 40)
                                     .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
                                     .cursor(.openHand)
+                                    // TODO fix scrubber, ratio is wrong when scrubbing
                                     .gesture(DragGesture()
                                         .onChanged { gesture in
                                             if (!playerState.isScrubbing) {

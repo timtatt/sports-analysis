@@ -37,7 +37,7 @@ struct EventBar : View {
             GeometryReader { geometry in
                 ForEach(getEventsInView(), id: \.id) { event in
                     RoundedRectangle(cornerRadius: 6)
-                        .fill(Color(event.code.color.nsColor))
+                        .fill(event.code.color)
                         .offset(x: CGFloat(event.startTime * zoomLevel), y: 2)
                         .frame(width: CGFloat(event.duration * zoomLevel), height: geometry.size.height - 4)
                 }

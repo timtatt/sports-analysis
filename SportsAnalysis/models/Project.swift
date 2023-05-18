@@ -15,6 +15,16 @@ class Project: ObservableObject, Codable {
     @Published var codes: [ProjectCode]
     @Published var events: OrderedDictionary<UUID, ProjectEvent>
     
+    static let defaultCodes = [
+        ProjectCode(name: "Inside 50 (SB)", colorName: "Red", shortcut: "A"),
+        ProjectCode(name: "Inside 50 (OP)", colorName: "Orange", shortcut: "B"),
+        ProjectCode(name: "Centre Bounce", colorName: "Yellow", shortcut: "C"),
+        ProjectCode(name: "Stoppage", colorName: "Green", shortcut: "D"),
+        ProjectCode(name: "Defensive Pressure", colorName: "Blue", shortcut: "E"),
+        ProjectCode(name: "Goal (SB)", colorName: "Purple", shortcut: "F"),
+        ProjectCode(name: "Goal (OP)", colorName: "Pink", shortcut: "G")
+    ]
+    
     
     init(name: String = "My New Project",
          videos: [ProjectVideo] = [],
@@ -23,15 +33,7 @@ class Project: ObservableObject, Codable {
         self.videos = videos
         self.events = OrderedDictionary(uniqueKeysWithValues: events.map({ ($0.id, $0) }))
         
-        self.codes = [
-            ProjectCode(name: "Inside 50 (SB)", color: ProjectCodeColor(.red), shortcut: "A"),
-            ProjectCode(name: "Inside 50 (OP)", color: ProjectCodeColor(.orange), shortcut: "B"),
-            ProjectCode(name: "Centre Bounce", color: ProjectCodeColor(.yellow), shortcut: "C"),
-            ProjectCode(name: "Stoppage", color: ProjectCodeColor(.green), shortcut: "C"),
-            ProjectCode(name: "Defensive Pressure", color: ProjectCodeColor(.blue), shortcut: "C"),
-            ProjectCode(name: "Goal (SB)", color: ProjectCodeColor(.purple), shortcut: "C"),
-            ProjectCode(name: "Goal (OP)", color: ProjectCodeColor(.systemPink), shortcut: "C")
-        ]
+        self.codes = Project.defaultCodes
     }
     
     enum CodingKeys: String, CodingKey {
@@ -42,17 +44,24 @@ class Project: ObservableObject, Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         name = try values.decode(String.self, forKey: .name)
         videos = try values.decode([ProjectVideo].self, forKey: .videos)
-        codes = try values.decode([ProjectCode].self, forKey: .codes)
+        let projectCodes = try values.decode(Dictionary<UUID, ProjectCode>.self, forKey: .codes)
         
-        let events = try values.decode([ProjectEvent].self, forKey: .events)
-        self.events = OrderedDictionary(uniqueKeysWithValues: events.map({ ($0.id, $0) }))
+        codes = Project.defaultCodes
+        
+        let eventsSerialised = try values.decode([ProjectEventSerialised].self, forKey: .events)
+        
+        self.events = OrderedDictionary(uniqueKeysWithValues: eventsSerialised
+            .filter({ projectCodes[$0.id] != nil })
+            .map({
+                ($0.id, ProjectEvent(serialised: $0, code: projectCodes[$0.code]!))
+            }))
     }
     
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(videos, forKey: .videos)
-        try container.encode(codes, forKey: .codes)
+        try container.encode(Dictionary(uniqueKeysWithValues: codes.map({ ($0.id, $0) })), forKey: .codes)
         try container.encode(events.values.elements, forKey: .events)
     }
     

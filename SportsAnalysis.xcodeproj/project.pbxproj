@@ -36,7 +36,6 @@
 		0FA3AA2B29FAB1C100B9FB29 /* ProjectSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA2A29FAB1C100B9FB29 /* ProjectSettingsView.swift */; };
 		0FA3AA2D29FAB6F200B9FB29 /* M2U01223.MPG in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3AA2C29FAB6F200B9FB29 /* M2U01223.MPG */; };
 		0FA3AA2F29FBE76800B9FB29 /* ProjectCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA2E29FBE76800B9FB29 /* ProjectCode.swift */; };
-		0FA3AA3129FBE9B300B9FB29 /* ProjectCodeColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3029FBE9B300B9FB29 /* ProjectCodeColor.swift */; };
 		0FA3AA3329FBEC3700B9FB29 /* ProjectCodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3229FBEC3700B9FB29 /* ProjectCodesView.swift */; };
 		0FA3AA3529FBED8E00B9FB29 /* ProjectEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3429FBED8E00B9FB29 /* ProjectEvent.swift */; };
 		0FA3AA3829FE352C00B9FB29 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */; };
@@ -91,7 +90,6 @@
 		0FA3AA2A29FAB1C100B9FB29 /* ProjectSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectSettingsView.swift; sourceTree = "<group>"; };
 		0FA3AA2C29FAB6F200B9FB29 /* M2U01223.MPG */ = {isa = PBXFileReference; lastKnownFileType = video.mpeg; name = M2U01223.MPG; path = "../../../../Desktop/Videos Test/M2U01223.MPG"; sourceTree = "<group>"; };
 		0FA3AA2E29FBE76800B9FB29 /* ProjectCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCode.swift; sourceTree = "<group>"; };
-		0FA3AA3029FBE9B300B9FB29 /* ProjectCodeColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCodeColor.swift; sourceTree = "<group>"; };
 		0FA3AA3229FBEC3700B9FB29 /* ProjectCodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCodesView.swift; sourceTree = "<group>"; };
 		0FA3AA3429FBED8E00B9FB29 /* ProjectEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEvent.swift; sourceTree = "<group>"; };
 		0FA3AA3729FE352C00B9FB29 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 				0FA3AA2329FAA51800B9FB29 /* Project.swift */,
 				0FA3AA2529FAA59800B9FB29 /* ProjectVideo.swift */,
 				0FA3AA2E29FBE76800B9FB29 /* ProjectCode.swift */,
-				0FA3AA3029FBE9B300B9FB29 /* ProjectCodeColor.swift */,
 				0FA3AA3429FBED8E00B9FB29 /* ProjectEvent.swift */,
 			);
 			path = models;
@@ -404,7 +401,6 @@
 				0FA3AA2B29FAB1C100B9FB29 /* ProjectSettingsView.swift in Sources */,
 				0F697FBD2A012C5E001C4F66 /* Logging.swift in Sources */,
 				0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */,
-				0FA3AA3129FBE9B300B9FB29 /* ProjectCodeColor.swift in Sources */,
 				0F8DFD972A091A4F00D79D1F /* TrackableScrollView.swift in Sources */,
 				0F8DFD9D2A0BBFF200D79D1F /* TimelineScrollbar.swift in Sources */,
 				0FA3AA2929FAB0B200B9FB29 /* ProjectManagerView.swift in Sources */,

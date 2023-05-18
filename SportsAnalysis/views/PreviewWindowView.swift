@@ -129,6 +129,7 @@ struct PreviewWindowView : View {
     
     @ObservedObject var playerState = PlayerState()
     
+    // TODO add shortcuts for skipping, playing and pausing
     var body : some View {
         VStack {
             PreviewWindowPlayer(playerState: playerState)

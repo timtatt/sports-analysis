@@ -11,22 +11,19 @@ import AVFoundation
 struct ProjectVideo : Codable {
     var name: String
     let filePath: URL
-    var events: [ProjectEvent]
     
     private enum CodingKeys: String, CodingKey {
-        case name, filePath, events
+        case name, filePath
     }
     
-    init(name: String, filePath: URL, events: [ProjectEvent] = []) {
+    init(name: String, filePath: URL) {
         self.filePath = filePath
-        self.events = events
         self.name = name
     }
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         name = try values.decode(String.self, forKey: .name)
-        events = try values.decode([ProjectEvent].self, forKey: .events)
         
         let absoluteFilePath = try values.decode(String.self, forKey: .filePath)
         filePath = URL(fileURLWithPath: absoluteFilePath)

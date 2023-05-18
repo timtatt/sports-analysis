@@ -60,7 +60,7 @@ struct EventListItem : View {
             Toggle("", isOn: isSelected)
                 .toggleStyle(.checkbox)
             Circle()
-                .fill(Color(event.code.color.nsColor))
+                .fill(event.code.color)
                 .frame(width: 20, height: 20)
             Text("\(TimeFormatter.toTimecode(seconds: event.startTime)): \(event.code.name) (\(TimeFormatter.toGeotime(seconds: event.duration)))")
 //                    Button("x") {

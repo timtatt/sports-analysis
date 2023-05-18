@@ -10,16 +10,16 @@ import SwiftUI
 
 struct ProjectCodesView : View {
     @ObservedObject var project: Project
-    // TODO set playbackTime precision to Float
     @Binding var playbackTime: Float
     
+    // TODO add shortcuts to coding
     var body : some View {
         VStack {
             Text("\(playbackTime)")
             ForEach(project.codes, id: \.self) { code in
                 HStack {
                     Circle()
-                        .fill(Color(code.color.nsColor))
+                        .fill(code.color)
                         .frame(width: 20, height: 20)
                     Text(code.name)
                     Button("+") {

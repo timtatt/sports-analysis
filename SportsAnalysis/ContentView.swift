@@ -39,6 +39,7 @@ struct ContentView: View {
                         
                     } catch {
                         print(error)
+                        // TODO convert this to an error popup
                         fatalError(error.localizedDescription)
                     }
                 }

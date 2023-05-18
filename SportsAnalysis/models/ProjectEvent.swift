@@ -7,7 +7,14 @@
 
 import Foundation
 
-class ProjectEvent : Codable, Identifiable, ObservableObject {
+struct ProjectEventSerialised : Decodable {
+    var id: UUID
+    var code: UUID
+    var startTime: Float
+    var endTime: Float
+}
+
+class ProjectEvent : Encodable, Identifiable, ObservableObject {
     
     var id: UUID
     
@@ -39,12 +46,18 @@ class ProjectEvent : Codable, Identifiable, ObservableObject {
         self.endTime = endTime
     }
     
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = UUID()
-        self.code = try container.decode(ProjectCode.self, forKey: .code)
-        self.startTime = try container.decode(Float.self, forKey: .startTime)
-        self.endTime = try container.decode(Float.self, forKey: .endTime)
+    init(serialised: ProjectEventSerialised, code: ProjectCode) {
+        self.id = serialised.id
+        self.code = code
+        self.startTime = serialised.startTime
+        self.endTime = serialised.endTime
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.code.id, forKey: .code)
+        try container.encode(self.startTime, forKey: .startTime)
+        try container.encode(self.endTime, forKey: .endTime)
     }
 
 }

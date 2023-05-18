@@ -6,18 +6,37 @@
 //
 import Foundation
 import AppKit
+import SwiftUI
 
 struct ProjectCode : Codable, Hashable {
+    var id: UUID
     var name: String
-    var color: ProjectCodeColor
+    var colorName: String
     
     var shortcut: String
     var leadingTime: Float = 10
     var trailingTime: Float = 10
     
-    init(name: String, color: ProjectCodeColor = ProjectCodeColor(.white), shortcut: String) {
+    static let availableColors: Set = [
+        "Red",
+        "Orange",
+        "Yellow",
+        "Green",
+        "Aqua",
+        "Blue",
+        "Purple",
+        "Pink"
+    ]
+    
+    var color: Color {
+        ProjectCode.availableColors.contains(colorName) ? Color(colorName) : Color("Blue")
+    }
+    
+    init(name: String, colorName: String, shortcut: String) {
+        self.id = UUID()
         self.name = name
-        self.color = color
+        self.colorName = colorName
         self.shortcut = shortcut
     }
+    
 }
