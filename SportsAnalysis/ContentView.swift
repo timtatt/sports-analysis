@@ -63,7 +63,7 @@ struct ContentView: View {
                             }
                         }
                     
-                    VideoTimeline(events: projectStore.project.events, playerState: playerState)
+                    VideoTimeline(project: projectStore.project, playerState: playerState)
                         .frame(maxWidth: .infinity, maxHeight: 100)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer()

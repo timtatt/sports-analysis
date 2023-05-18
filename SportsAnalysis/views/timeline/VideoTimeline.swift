@@ -12,8 +12,7 @@ import AVKit
 
 struct VideoTimeline : View {
     
-    var events: OrderedDictionary<UUID, ProjectEvent>
-    
+    @ObservedObject var project: Project
     @ObservedObject var playerState: PlayerState
     
     @State var scrollPosition: CGPoint = CGPoint(x: 0, y: 0)
@@ -69,7 +68,7 @@ struct VideoTimeline : View {
                                             let mouseLocation = getMouseLocation(geometry)
                                             let offsetPosition = scrollPosition.x + mouseLocation.x
                                             let playbackPosition = BoundsChecker.minmax(minBound: 0, value: Float(offsetPosition) / zoomLevel, maxBound: playerState.duration)
-                                                                                        
+              
                                             if (mouseLocation.x > geometry.size.width) {
                                                 scrollPosition.x = BoundsChecker.minmax(minBound: 0, value: scrollPosition.x + mouseLocation.x - geometry.size.width, maxBound: timelineWidth - geometry.size.width)
                                             } else if (mouseLocation.x < 0) {
@@ -88,13 +87,12 @@ struct VideoTimeline : View {
                                             NSCursor.pop()
                                         })
                                     
-                                    // TODO not updating when events are added
                                     EventBar(
                                         videoDuration: playerState.duration,
                                         zoomLevel: zoomLevel,
                                         scrollOffset: scrollPosition.x,
                                         timelineWrapperWidth: outerScrollGeometry.size.width,
-                                        events: events)
+                                        events: project.events)
                                 }
                                 
                                 // Scrubber
@@ -141,7 +139,7 @@ struct VideoTimeline : View {
                 TimelineScrollbar(
                     scrollPosition: $scrollPosition.x,
                     zoomLevel: $zoomLevel,
-                    events: events.values.elements,
+                    events: project.events.values.elements,
                     maxZoomLevel: CGFloat(maxZoomLevel),
                     minZoomLevel: minZoomLevel
                 )
@@ -169,7 +167,7 @@ struct VideoTimeline_Previews : PreviewProvider {
         }()
         
         VStack {
-            VideoTimeline(events: OrderedDictionary(), playerState: state)
+            VideoTimeline(project: Project(), playerState: state)
         }
         .frame(width: 900, height: 160)
         
