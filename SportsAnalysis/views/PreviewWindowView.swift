@@ -29,6 +29,10 @@ class PlayerState : ObservableObject {
         get { Float(playerItem?.duration.seconds ?? 0) }
     }
     
+    var fps : Int {
+        24
+    }
+    
     init() {
         player.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 2), queue: .main) {
             [weak self] time in
@@ -61,6 +65,10 @@ class PlayerState : ObservableObject {
         }
     }
     
+    func seek(frames: Int) {
+        seek(seconds: playbackTime + Float(frames) / Float(fps))
+    }
+    
     func seekPlayerOnly(seconds: Float) {
         self.player.seek(to: CMTime(value: Int64(seconds * 1000), timescale: 1000),
                           toleranceBefore: CMTime.zero,
@@ -83,10 +91,16 @@ class PlayerState : ObservableObject {
 class PreviewWindowPlayerView : NSView {
     private let playerLayer = AVPlayerLayer()
     var player: AVPlayer?
+    
+    let parent: PreviewWindowPlayer;
+    
+    override var acceptsFirstResponder: Bool {
+        true
+    }
         
     init(frame: CGRect, previewWindowPlayer: PreviewWindowPlayer) {
+        self.parent = previewWindowPlayer
         super.init(frame: frame)
-        
         self.wantsLayer = true
         
         player = previewWindowPlayer.playerState.player
@@ -109,6 +123,19 @@ class PreviewWindowPlayerView : NSView {
         super.layout()
         playerLayer.frame = bounds
     }
+    
+    override func keyDown(with event: NSEvent) {
+        let keyCodeCharacter = Character(event.characters!)
+        let keyEquivalent = KeyEquivalent(keyCodeCharacter)
+        
+        switch (keyCodeCharacter) {
+        case KeyEquivalent.leftArrow.character,
+            KeyEquivalent.rightArrow.character:
+            parent.keyDown(keyEquivalent)
+        default:
+            super.keyDown(with: event)
+        }
+    }
 }
 
 struct PreviewWindowPlayer : NSViewRepresentable {
@@ -122,7 +149,24 @@ struct PreviewWindowPlayer : NSViewRepresentable {
         
         let view = PreviewWindowPlayerView(frame: .zero, previewWindowPlayer: self)
         
+        view.window?.makeFirstResponder(view)
+                
         return view
+    }
+    
+    func keyDown(_ key: KeyEquivalent) {
+        switch (key.character) {
+        case KeyEquivalent.rightArrow.character:
+            if (!playerState.isPlaying) {
+                playerState.seek(frames: 1)
+            }
+        case KeyEquivalent.leftArrow.character:
+            if (!playerState.isPlaying) {
+                playerState.seek(frames: -1)
+            }
+        default:
+            return
+        }
     }
 }
 
@@ -167,6 +211,7 @@ struct PreviewWindowView : View {
                     }
                     .cursor(.pointingHand)
                     .buttonStyle(.plain)
+                    .keyboardShortcut(.space, modifiers: [])
                     
                     
                     Button(action: {
