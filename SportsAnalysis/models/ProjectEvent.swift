@@ -19,11 +19,11 @@ class ProjectEvent : Encodable, Identifiable, ObservableObject {
     var id: UUID
     
     var code: ProjectCode
-    var startTime: Float
-    var endTime: Float
+    @Published var startTime: Float
+    @Published var endTime: Float
     
     var duration: Float { endTime - startTime }
-    
+        
     static func == (lhs: ProjectEvent, rhs: ProjectEvent) -> Bool {
         return lhs.id == rhs.id
     }

@@ -20,6 +20,7 @@
 		0F8DFDA62A14E2B900D79D1F /* TimelineScrubber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFDA52A14E2B900D79D1F /* TimelineScrubber.swift */; };
 		0F8DFDAA2A14FA9500D79D1F /* Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFDA92A14FA9500D79D1F /* Widget.swift */; };
 		0F8DFDAD2A1765AA00D79D1F /* ProjectCodeItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFDAC2A1765AA00D79D1F /* ProjectCodeItem.swift */; };
+		0F8DFDB12A1B8FE500D79D1F /* DraggableItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F8DFDB02A1B8FE500D79D1F /* DraggableItem.swift */; };
 		0FA3A9EC29F92BA800B9FB29 /* SportsAnalysisApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */; };
 		0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */; };
 		0FA3A9F029F92BA900B9FB29 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3A9EF29F92BA900B9FB29 /* Assets.xcassets */; };
@@ -71,6 +72,7 @@
 		0F8DFDA52A14E2B900D79D1F /* TimelineScrubber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineScrubber.swift; sourceTree = "<group>"; };
 		0F8DFDA92A14FA9500D79D1F /* Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widget.swift; sourceTree = "<group>"; };
 		0F8DFDAC2A1765AA00D79D1F /* ProjectCodeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCodeItem.swift; sourceTree = "<group>"; };
+		0F8DFDB02A1B8FE500D79D1F /* DraggableItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableItem.swift; sourceTree = "<group>"; };
 		0FA3A9E829F92BA800B9FB29 /* SportsAnalysis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SportsAnalysis.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FA3A9EB29F92BA800B9FB29 /* SportsAnalysisApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportsAnalysisApp.swift; sourceTree = "<group>"; };
 		0FA3A9ED29F92BA800B9FB29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				0F8DFD9A2A0BBFDB00D79D1F /* EventBar.swift */,
 				0F8DFD9C2A0BBFF200D79D1F /* TimelineScrollbar.swift */,
 				0F8DFDA52A14E2B900D79D1F /* TimelineScrubber.swift */,
+				0F8DFDB02A1B8FE500D79D1F /* DraggableItem.swift */,
 			);
 			path = timeline;
 			sourceTree = "<group>";
@@ -411,6 +414,7 @@
 			files = (
 				0FA3AA2B29FAB1C100B9FB29 /* ProjectSettingsView.swift in Sources */,
 				0F697FBD2A012C5E001C4F66 /* Logging.swift in Sources */,
+				0F8DFDB12A1B8FE500D79D1F /* DraggableItem.swift in Sources */,
 				0FA3A9EE29F92BA800B9FB29 /* ContentView.swift in Sources */,
 				0F8DFD972A091A4F00D79D1F /* TrackableScrollView.swift in Sources */,
 				0F8DFD9D2A0BBFF200D79D1F /* TimelineScrollbar.swift in Sources */,
