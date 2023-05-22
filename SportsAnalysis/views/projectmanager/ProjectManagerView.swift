@@ -16,12 +16,12 @@ struct ProjectManagerView : View {
             Widget(icon: "tag.fill", title: "Codes") {
                 ProjectCodesView(project: project, playbackTime: $playerState.playbackTime)
             }
-            Widget(icon: "gear", title: "Project Settings") {
-                ProjectSettingsView(project: project)
-                    .tabItem {
-                        Label("Project Settings", systemImage: "tray.and.arrow.up.fill")
-                    }
-            }
+//            Widget(icon: "gear", title: "Project Settings") {
+//                ProjectSettingsView(project: project)
+//                    .tabItem {
+//                        Label("Project Settings", systemImage: "tray.and.arrow.up.fill")
+//                    }
+//            }
         }
     }
 }

@@ -16,13 +16,13 @@ class Project: ObservableObject, Codable {
     @Published var events: OrderedDictionary<UUID, ProjectEvent>
     
     static let defaultCodes = [
-        ProjectCode(name: "Inside 50 (SB)", colorName: "Red", shortcut: "A"),
-        ProjectCode(name: "Inside 50 (OP)", colorName: "Orange", shortcut: "B"),
-        ProjectCode(name: "Centre Bounce", colorName: "Yellow", shortcut: "C"),
-        ProjectCode(name: "Stoppage", colorName: "Green", shortcut: "D"),
-        ProjectCode(name: "Defensive Pressure", colorName: "Blue", shortcut: "E"),
-        ProjectCode(name: "Goal (SB)", colorName: "Purple", shortcut: "F"),
-        ProjectCode(name: "Goal (OP)", colorName: "Pink", shortcut: "G")
+        ProjectCode(name: "Inside 50 (SB)", colorName: "Red", shortcut: "a"),
+        ProjectCode(name: "Inside 50 (OP)", colorName: "Orange", shortcut: "b"),
+        ProjectCode(name: "Centre Bounce", colorName: "Yellow", shortcut: "c"),
+        ProjectCode(name: "Stoppage", colorName: "Green", shortcut: "d"),
+        ProjectCode(name: "Defensive Pressure", colorName: "Blue", shortcut: "e"),
+        ProjectCode(name: "Goal (SB)", colorName: "Purple", shortcut: "f"),
+        ProjectCode(name: "Goal (OP)", colorName: "Pink", shortcut: "g")
     ]
     
     

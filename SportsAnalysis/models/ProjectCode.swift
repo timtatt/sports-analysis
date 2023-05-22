@@ -32,6 +32,10 @@ struct ProjectCode : Codable, Hashable {
         ProjectCode.availableColors.contains(colorName) ? Color(colorName) : Color("Blue")
     }
     
+    var keyboardShortcut: KeyEquivalent {
+        KeyEquivalent(Character(shortcut))
+    }
+    
     init(name: String, colorName: String, shortcut: String) {
         self.id = UUID()
         self.name = name

@@ -54,10 +54,11 @@ struct Widget<V1 : View, V2 : View> : View {
                     actions
                         .frame(alignment: .trailing)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(EdgeInsets(top: 10, leading: 10, bottom: 5, trailing: 10))
                 body
-                    .padding(EdgeInsets(top: 5, leading: 0, bottom: 0, trailing: 0))
             }
-            .padding(20)
+            .padding(10)
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .topLeading)
             .background(Color("WidgetBackground"))
             .cornerRadius(8)
