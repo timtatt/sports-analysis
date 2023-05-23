@@ -36,7 +36,7 @@ struct ProjectCode : Codable, Hashable {
         KeyEquivalent(Character(shortcut))
     }
     
-    init(name: String, colorName: String, shortcut: String) {
+    init(name: String, colorName: String = "Blue", shortcut: String = "") {
         self.id = UUID()
         self.name = name
         self.colorName = colorName

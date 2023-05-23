@@ -57,6 +57,7 @@ struct ContentView: View {
                                 projectStore.loadLastProject()
                                 playerItem = try await projectStore.project.getVideoPlayerItem()
                                 playerState.playerItem = playerItem
+                                print(projectStore.project.events)
                             } catch {
                                 print("Unable to load project")
                                 print(error)
