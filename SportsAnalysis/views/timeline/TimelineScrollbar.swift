@@ -50,10 +50,10 @@ struct TimelineScrollbar : View {
                 
                 
                 DraggableItem(
+                    parentWidth: geometry.size.width,
                     overlayWidth: overlayWidth,
                     overlayStart: overlayStart,
                     minOverlayWidth: minOverlayWidth)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .background(Color("WidgetBackground"))
         }

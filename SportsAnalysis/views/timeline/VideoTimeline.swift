@@ -97,8 +97,8 @@ struct VideoTimeline : View {
                                 
                                 // Scrubber
                                 TimelineScrubber(height: 40)
-                                    .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
                                     .cursor(.openHand)
+                                    .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
                                     .gesture(DragGesture()
                                         .onChanged { gesture in
                                             if (!playerState.isScrubbing) {

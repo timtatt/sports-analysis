@@ -20,9 +20,10 @@ struct EventBar : View {
     var body : some View {
         ZStack {
             GeometryReader { geometry in
-                // TODO unable to handle two events in the same space
                 ForEach(getEventsInView(), id: \.id) { event in
-                    EventBarItem(event: event, zoomLevel: zoomLevel)
+                    
+                    // TODO when dragging outside scrollview, auto scroll
+                    EventBarItem(event: event, parentWidth: geometry.size.width, zoomLevel: zoomLevel)
                 }
             }
             
@@ -50,6 +51,7 @@ struct EventBar : View {
 struct EventBarItem : View {
     
     @ObservedObject var event: ProjectEvent
+    let parentWidth: CGFloat
     let zoomLevel: Float
     
     var body : some View {
@@ -72,11 +74,11 @@ struct EventBarItem : View {
         )
         
         DraggableItem(
+            parentWidth: parentWidth,
             overlayWidth: eventDuration,
             overlayStart: eventStart,
             minOverlayWidth: CGFloat(4 * zoomLevel),
             color: event.code.color,
             title: event.code.name)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
