@@ -15,8 +15,11 @@ struct TrackableScrollView<Content : View> : NSViewRepresentable {
     @Binding var scrollPosition: CGPoint
     @ViewBuilder var content: () -> Content
     
-    init(scrollPosition: Binding<CGPoint>, @ViewBuilder content: @escaping () -> Content) {
+    let backgroundColor: NSColor
+    
+    init(scrollPosition: Binding<CGPoint>, backgroundColor: NSColor = .clear, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
+        self.backgroundColor = backgroundColor
         self._scrollPosition = scrollPosition
     }
     
@@ -29,6 +32,7 @@ struct TrackableScrollView<Content : View> : NSViewRepresentable {
         view.horizontalScrollElasticity = .none
         view.horizontalScroller?.alphaValue = 0
         view.horizontalScroller?.scrollerStyle = .overlay
+        view.backgroundColor = backgroundColor
         
         NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.viewScrolled(_:)), name: NSView.boundsDidChangeNotification, object: view.contentView)
         

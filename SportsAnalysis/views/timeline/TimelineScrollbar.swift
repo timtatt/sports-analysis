@@ -55,10 +55,12 @@ struct TimelineScrollbar : View {
                     overlayStart: overlayStart,
                     minOverlayWidth: minOverlayWidth)
             }
-            .background(Color("WidgetBackground"))
+            
         }
-        .cornerRadius(6)
+        .frame(maxWidth: .infinity)
         .frame(height: 20)
+        .background(Color("WidgetBackground"))
+        .cornerRadius(6)
     }
 }
 
