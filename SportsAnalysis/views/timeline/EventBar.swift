@@ -32,15 +32,19 @@ struct EventBar : View {
         .frame(height: 40)
     }
     
-    func getEventsInView() -> [ProjectEvent] {
+    func getEventsInView() -> [ProjectCodedEvent] {
         let viewStartTime: Float = Float(scrollOffset) / zoomLevel;
         let viewEndTime: Float = viewStartTime + Float(timelineWrapperWidth) / zoomLevel;
         
-        var eventsInView: [ProjectEvent] = []
+        var eventsInView: [ProjectCodedEvent] = []
         
         for event in events.values {
-            if (event.endTime >= viewStartTime || event.startTime < viewEndTime) {
-                eventsInView.append(event)
+            // TODO handle ProjectMarker
+            if (event is ProjectCodedEvent) {
+                let codedEvent = event as! ProjectCodedEvent
+                if (codedEvent.endTime >= viewStartTime || codedEvent.startTime < viewEndTime) {
+                    eventsInView.append(codedEvent)
+                }
             }
         }
         
@@ -50,7 +54,7 @@ struct EventBar : View {
 
 struct EventBarItem : View {
     
-    @ObservedObject var event: ProjectEvent
+    @ObservedObject var event: ProjectCodedEvent
     let parentWidth: CGFloat
     let zoomLevel: Float
     

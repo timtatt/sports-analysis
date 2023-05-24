@@ -40,6 +40,10 @@ class Project: ObservableObject, Codable {
         case name, videos, codes, events
     }
     
+    enum ProjectEventKey : CodingKey {
+        case type
+    }
+    
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         name = try values.decode(String.self, forKey: .name)
@@ -48,26 +52,17 @@ class Project: ObservableObject, Codable {
         let projectCodes = try values.decode([UUID: ProjectCode].self, forKey: .codes)
         codes = Array(projectCodes.values)
         
-        let eventsSerialised = try values.decode([ProjectEvent.Serialised].self, forKey: .events)
         let unknownCode = ProjectCode(name: "Unknown")
-        var orphanEventNum: Int = 0
-        events = OrderedDictionary(uniqueKeysWithValues: eventsSerialised
-            .map({ serialisedEvent in
-                var code = projectCodes[serialisedEvent.code]
+        let decodedEvents = try values.decode([DecodableProjectEvent].self,
+                                       forKey: .events,
+                                       configuration: ProjectEventDecodeConfiguration(codes: projectCodes, unknownCode: unknownCode))
                 
-                if (code == nil) {
-                    code = unknownCode
-                    orphanEventNum += 1
-                }
-                
-                return (serialisedEvent.id, ProjectEvent(serialised: serialisedEvent, code: code!))
-            }))
-        
-        if (orphanEventNum > 0) {
-            codes.append(unknownCode)
-        }
+        self.events = OrderedDictionary(uniqueKeysWithValues: decodedEvents
+            .filter({ $0.data != nil })
+            .map({ ($0.data!.id, $0.data!) })
+        )
     }
-    
+        
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
@@ -76,7 +71,15 @@ class Project: ObservableObject, Codable {
         let serialisedCodes: [UUID: ProjectCode] = Dictionary(uniqueKeysWithValues: codes.map({ ($0.id, $0) }))
         try container.encode(serialisedCodes, forKey: .codes)
         
-        try container.encode(events.values.elements, forKey: .events)
+        var eventsContainer = container.nestedUnkeyedContainer(forKey: .events)
+        for event in events.values {
+            if (event is ProjectCodedEvent) {
+                let codedEvent = event as! ProjectCodedEvent
+                try codedEvent.encode(to: eventsContainer.superEncoder())
+            } else {
+                try event.encode(to: eventsContainer.superEncoder())
+            }
+        }
     }
     
     func getVideoPlayerItem() async throws -> AVPlayerItem {
@@ -116,27 +119,3 @@ class Project: ObservableObject, Codable {
     }
 }
 
-
-extension ProjectEvent : Encodable {
-    struct Serialised : Codable {
-        var id: UUID
-        var code: UUID
-        var startTime: Float
-        var endTime: Float
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case id, code, startTime, endTime
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(self.code.id, forKey: .code)
-        try container.encode(self.startTime, forKey: .startTime)
-        try container.encode(self.endTime, forKey: .endTime)
-    }
-    
-    convenience init(serialised: Serialised, code: ProjectCode) {
-        self.init(id: serialised.id, code: code, startTime: serialised.startTime, endTime: serialised.endTime)
-    }
-}

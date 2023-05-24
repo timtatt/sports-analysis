@@ -24,7 +24,7 @@ struct ProjectCodesView : View {
     }
     
     func addEvent(code: ProjectCode) {
-        let event = ProjectEvent(code: code, timestamp: playbackTime)
+        let event = ProjectCodedEvent(code: code, timestamp: playbackTime)
         
         // TODO optimise this insert
         project.events[event.id] = event

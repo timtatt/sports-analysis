@@ -40,7 +40,7 @@ struct EventManager : View {
 }
 
 struct EventListItem : View {
-    @ObservedObject var event: ProjectEvent
+    var event: ProjectEvent
     @Binding var selectedEvents: Dictionary<UUID, ProjectEvent>
     
     
@@ -59,13 +59,17 @@ struct EventListItem : View {
         HStack {
             Toggle("", isOn: isSelected)
                 .toggleStyle(.checkbox)
-            Circle()
-                .fill(event.code.color)
-                .frame(width: 20, height: 20)
-            Text("\(TimeFormatter.toTimecode(seconds: event.startTime)): \(event.code.name) (\(TimeFormatter.toGeotime(seconds: event.duration)))")
-//                    Button("x") {
-//                        project.events.remove(at: index)
-//                    }
+            if (event is ProjectCodedEvent) {
+                let codedEvent = event as! ProjectCodedEvent
+                Circle()
+                    .fill(codedEvent.code.color)
+                    .frame(width: 20, height: 20)
+                
+                Text("\(TimeFormatter.toTimecode(seconds: codedEvent.startTime)): \(codedEvent.code.name) (\(TimeFormatter.toGeotime(seconds: codedEvent.duration)))")
+                //                    Button("x") {
+                //                        project.events.remove(at: index)
+                //                    }
+            }
         }
     }
 }

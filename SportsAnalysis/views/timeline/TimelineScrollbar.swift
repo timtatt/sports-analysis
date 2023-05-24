@@ -42,10 +42,14 @@ struct TimelineScrollbar : View {
         
             ZStack(alignment: .leading) {
                 ForEach(events, id: \.id) { event in
-                    Circle()
-                        .fill(event.code.color)
-                        .offset(x: CGFloat(event.startTime) * minZoomLevel)
-                        .frame(width: 6, height: 6)
+                    if (event is ProjectCodedEvent) {
+                        let codedEvent = event as! ProjectCodedEvent
+                        Circle()
+                            .fill(codedEvent.code.color)
+                            .offset(x: CGFloat(codedEvent.startTime) * minZoomLevel)
+                            .frame(width: 6, height: 6)
+                    }
+                    
                 }
                 
                 
