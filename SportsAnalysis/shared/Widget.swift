@@ -43,22 +43,21 @@ struct Widget<V1 : View, V2 : View> : View {
         GeometryReader { geometry in
             let (actions, body) = self.content().value
             VStack(alignment: .leading) {
-                HStack(alignment: .center) {
+                HStack(alignment: .center, spacing: 14) {
                     if (icon != nil) {
                         Image(systemName: icon!)
-                            .font(.system(size: 20))
+                            .font(.system(size: 24))
                     }
                     Text(title)
-                        .font(.system(size: 20))
+                        .font(.system(size: 28))
                         .fontWeight(.bold)
                     actions
                         .frame(alignment: .trailing)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(EdgeInsets(top: 10, leading: 10, bottom: 5, trailing: 10))
                 body
             }
-            .padding(10)
+            .padding(24)
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .topLeading)
             .background(Color("WidgetBackground"))
             .cornerRadius(8)

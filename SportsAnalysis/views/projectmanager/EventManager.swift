@@ -29,9 +29,28 @@ struct EventManager : View {
         )
         
         Widget(icon: "mappin.and.ellipse", title: "Events") {
-            List(project.events.values, selection: selectedEvent) { event in
-                EventListItem(event: event, selectedEvents: $selectedEvents)
+            let events = project.events.values
+            ScrollView {
+                VStack(alignment: .leading) {
+                    ForEach(events) { event in
+                        switch (event.type) {
+                        case .codedEvent:
+                            EventListCodedEventItem(event: event as! ProjectCodedEvent)
+                                .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        case .marker:
+                            let isFirst: Bool = events.first == event
+                            EventListMarkerItem(isFirst: isFirst, event: event as! ProjectMarker)
+                                .padding(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        default:
+                            EmptyView()
+                        }
+                    }
+                }
             }
+            .padding(EdgeInsets(top: 0, leading: -18, bottom: 0, trailing: 0))
+            .scrollContentBackground(.hidden)
+            
+            
             Button("Export Selected Events") {
                 print("not implemented")
             }
@@ -39,44 +58,90 @@ struct EventManager : View {
     }
 }
 
-struct EventListItem : View {
-    var event: ProjectEvent
-    @Binding var selectedEvents: Dictionary<UUID, ProjectEvent>
-    
+struct EventListCodedEventItem: View {
+    var event: ProjectCodedEvent
     
     var body : some View {
-        let isSelected: Binding<Bool> = Binding(
-            get: { selectedEvents[event.id] != nil },
-            set: { (val: Bool) -> Void in
-                if (val) {
-                    selectedEvents[event.id] = event
-                } else {
-                    selectedEvents[event.id] = nil
-                }
+        HStack(alignment: .center, spacing: 6) {
+            Rectangle()
+                .fill(event.code.color)
+                .cornerRadius(4)
+                .frame(width: 12, height: 30)
+            
+            Text("\(TimeFormatter.toTimecode(seconds: event.startTime)) (\(TimeFormatter.toGeotime(seconds: event.duration)))")
+                .font(.system(size: 18))
+                .frame(minWidth: 120, alignment: .leading)
+            
+            Text("\(event.code.name) ")
+                .font(.system(size: 18))
+                .padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0))
+            Spacer()
+            
+            Button(action: {
+                print("play event")
+            }) {
+                Image(systemName: "play.fill")
+                    .padding(7)
+                    .font(.system(size: 18))
+                    .background(Color("Primary"))
+                    .clipShape(Circle())
             }
-        )
-        
-        HStack {
-            Toggle("", isOn: isSelected)
-                .toggleStyle(.checkbox)
-            if (event is ProjectCodedEvent) {
-                let codedEvent = event as! ProjectCodedEvent
-                Circle()
-                    .fill(codedEvent.code.color)
+            .buttonStyle(PlainButtonStyle())
+            
+            Button(action: {
+                print("delete event")
+            }) {
+                Image(systemName: "minus")
                     .frame(width: 20, height: 20)
+                    .font(.system(size: 14))
+                    .background(.red)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(PlainButtonStyle())
+        }
+    }
+}
+
+struct EventListMarkerItem : View {
+    var isFirst: Bool
+    var event: ProjectMarker
+    
+    var body : some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if (!isFirst) {
+                Rectangle()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 1)
+                    .background(.white)
+                    .padding(EdgeInsets(top: 4, leading: 0, bottom: 12, trailing: 0))
+            }
+            HStack(alignment: .center, spacing: 6) {
+                Text("\(TimeFormatter.toTimecode(seconds: event.startTime))")
+                    .font(.system(size: 18))
+                    .frame(minWidth: 120, alignment: .leading)
                 
-                Text("\(TimeFormatter.toTimecode(seconds: codedEvent.startTime)): \(codedEvent.code.name) (\(TimeFormatter.toGeotime(seconds: codedEvent.duration)))")
-                //                    Button("x") {
-                //                        project.events.remove(at: index)
-                //                    }
+                Text("\(event.title)")
+                    .font(.system(size: 18))
+                    .fontWeight(.bold)
+                    .padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0))
             }
         }
+        .padding(EdgeInsets(top: 0, leading: 18, bottom: 0, trailing: 0))
     }
 }
 
 
 struct EventManager_Previews: PreviewProvider {
     static var previews: some View {
-        EventManager(project: Project(), playerState: PlayerState())
+        let project: Project = {
+            let project = Project()
+            let code = ProjectCode(name: "Some Code")
+            project.events[UUID()] = ProjectMarker(title: "Some Marker", startTime: 5)
+            project.events[UUID()] = ProjectCodedEvent(code: code, startTime: 10, endTime: 23)
+            project.events[UUID()] = ProjectCodedEvent(code: code, startTime: 12, endTime: 23)
+            project.events[UUID()] = ProjectMarker(title: "Some Marker 2", startTime: 15)
+            return project
+        }()
+        EventManager(project: project, playerState: PlayerState())
     }
 }

@@ -42,12 +42,17 @@ class DecodableProjectEvent : DecodableWithConfiguration {
     }
 }
 
-class ProjectEvent : ObservableObject, Encodable, DecodableWithConfiguration, Identifiable {
+class ProjectEvent : ObservableObject, Encodable, DecodableWithConfiguration, Identifiable, Equatable {
     
     var id: UUID
     @Published var startTime: Float
+    
     var type: ProjectEventType {
         .unknown
+    }
+    
+    static func == (lhs: ProjectEvent, rhs: ProjectEvent) -> Bool {
+        lhs.id == rhs.id
     }
     
     enum CodingKeys : CodingKey {
@@ -84,7 +89,7 @@ class ProjectMarker : ProjectEvent {
         case id, title, startTime
     }
     
-    init(id: UUID, title: String, startTime: Float) {
+    init(id: UUID = UUID(), title: String, startTime: Float) {
         self.title = title
         super.init(id: id, startTime: startTime)
     }

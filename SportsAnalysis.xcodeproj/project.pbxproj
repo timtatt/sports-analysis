@@ -158,6 +158,13 @@
 			path = codes;
 			sourceTree = "<group>";
 		};
+		0F8DFDB22A1E46D700D79D1F /* events */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = events;
+			sourceTree = "<group>";
+		};
 		0FA3A9DF29F92BA800B9FB29 = {
 			isa = PBXGroup;
 			children = (
@@ -225,6 +232,7 @@
 		0FA3AA1E29FAA3BF00B9FB29 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				0F8DFDB22A1E46D700D79D1F /* events */,
 				0F8DFDAB2A17658600D79D1F /* codes */,
 				0F697FC12A027973001C4F66 /* timeline */,
 				0FA3AA2729FAB09400B9FB29 /* projectmanager */,

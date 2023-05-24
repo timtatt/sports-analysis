@@ -86,6 +86,7 @@ struct VideoTimeline : View {
                                 events: project.events)
                         }
                         
+                        // TODO scrubber does weird things while zooming
                         TimelineScrubber(height: 40)
                             .cursor(.openHand)
                             .offset(x: CGFloat(playerState.playbackTime * zoomLevel) - 6, y: 0)
